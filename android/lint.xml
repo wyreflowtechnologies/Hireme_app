@@ -1,0 +1,5 @@
+<lint>
+    <issue id="Deprecation">
+        <ignore path="**/build/**/*.java" />
+    </issue>
+</lint>
