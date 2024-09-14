@@ -96,9 +96,6 @@ class _PaymentFailedPageState extends State<PaymentFailedPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
-        
-
-        
             Text(
               "We aren't able to process your payment. Please try again.",
               textAlign: TextAlign.center,
@@ -122,7 +119,7 @@ class _PaymentFailedPageState extends State<PaymentFailedPage> {
                 });
         
                 try {
-                  widget.onTryAgain(10.00); // Call the passed function with the amount parameter
+                  widget.onTryAgain(1.00); // Call the passed function with the amount parameter
         
                 } finally {
                   setState(() {

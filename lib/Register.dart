@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Controller/Register_controller.dart';
 import 'package:hiremi_version_two/Custom_Widget/Curved_Container.dart';
 import 'package:hiremi_version_two/Custom_Widget/Elevated_Button.dart';
-import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
-import 'package:hiremi_version_two/Login.dart';
+// import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
+// import 'package:hiremi_version_two/Login.dart';
 import 'package:hiremi_version_two/Models/register_model.dart';
 
 import 'package:hiremi_version_two/Utils/colors.dart';
@@ -394,7 +394,7 @@ final List<String> _states = [
                   key: _formKey,
                   child: Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.045),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.0425),
                       buildSectionHeader("Personal Information"),
                       buildLabeledTextField(
                         context,
@@ -457,11 +457,21 @@ final List<String> _states = [
                           return null;
                         },
                         onTap: () async {
+                          final screenSize = MediaQuery.of(context).size;
                           final DateTime? pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1900),
                             lastDate: DateTime.now(),
+                            builder: (BuildContext context, Widget? child) {
+                              return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  // Adjust text scale for larger/smaller screens
+                                  textScaleFactor: screenSize.width*0.00225,
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
                           if (pickedDate != null) {
                             setState(() {

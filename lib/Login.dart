@@ -170,6 +170,7 @@ class _LogInState extends State<LogIn> {
       await prefs.setString('email', _emailController.text); // Save email to SharedPreferences
 
       print("Login successful");
+      print(response.body);
       _printSavedEmail();
     }
 

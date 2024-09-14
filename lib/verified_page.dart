@@ -541,7 +541,7 @@ class _VerifiedPageState extends State<VerifiedPage> {
       email = savedEmail;
     });
     print(email);
-    _checkEmail();
+   // _checkEmail();
   }
 
   Future<void> _checkEmail() async {

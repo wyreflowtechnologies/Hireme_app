@@ -149,7 +149,7 @@ class _AddExperienceState extends State<AddExperience> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Edit Profile'),
       ),
@@ -160,599 +160,625 @@ class _AddExperienceState extends State<AddExperience> {
           bottom: kToolbarHeight,
           left: Sizes.responsiveDefaultSpace(context),
         ),
-        child: Form(
-          key: _formKey,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text(
-              'Experience',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            SizedBox(
-              height: Sizes.responsiveMd(context),
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Do you have work experience?',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  '*',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text(
+                'Experience',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(
+                height: Sizes.responsiveMd(context)*0.4,
+              ),
+              Row(
+                children: [
+                  const Text(
+                    'Do you have work experience?',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'YES',
-                      groupValue: experience,
-                      onChanged: (value) => setState(() {
-                        experience = value!;
-                      }),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
                     ),
-                    Text(
-                      'Yes',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: experience == 'YES'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'NO',
-                      groupValue: experience,
-                      onChanged: (value) {
-                        setState(() {
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'YES',
+                        groupValue: experience,
+                        onChanged: (value) => setState(() {
                           experience = value!;
-                        });
-                      },
-                    ),
-                    Text(
-                      'No',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: experience == 'NO'
-                            ? Colors.black
-                            : AppColors.secondaryText,
+                        }),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            if (experience == 'YES') ...[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'What type of work environment do you prefer?',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  '*',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'On-Site',
-                      groupValue: environment,
-                      onChanged: (value) => setState(() {
-                        environment = value!;
-                      }),
-                    ),
-                    Text(
-                      'On-Site',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 11,
-                        color: environment == 'On-Site'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'Hybrid',
-                      groupValue: environment,
-                      onChanged: (value) {
-                        setState(() {
-                          environment = value!;
-                        });
-                      },
-                    ),
-                    Text(
-                      'Hybrid',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 11,
-                        color: environment == 'Hybrid'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'Remote',
-                      groupValue: environment,
-                      onChanged: (value) {
-                        setState(() {
-                          environment = value!;
-                        });
-                      },
-                    ),
-                    Text(
-                      'Remote',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 11,
-                        color: environment == 'Remote'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Is this your current company?',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                ),
-
-                Text(
-                  '*',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'YES',
-                      groupValue: currentCompany,
-                      onChanged: (value) => setState(() {
-                        currentCompany = value!;
-                      }),
-                    ),
-                    Text(
-                      'Yes',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: currentCompany == 'YES'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-
-                Row(
-                  children: [
-
-                    Radio<String>(
-                      activeColor: Colors.blue,
-                      value: 'NO',
-                      groupValue: currentCompany,
-                      onChanged: (value) {
-                        setState(() {
-                          currentCompany = value!;
-                        });
-                      },
-                    ),
-                    Text(
-                      'No',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                        color: currentCompany == 'NO'
-                            ? Colors.black
-                            : AppColors.secondaryText,
-                      ),
-                    ),
-
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        const Text(
-                          'Organization Name',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          '*',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ]),
-                      SizedBox(
-                        height: Sizes.responsiveXs(context),
-                      ),
-                      CustomTextField(
-                        controller: organizationController,
-                        hintText: '',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Organization Name is required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: Sizes.responsiveSm(context)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(children: [
-                        const Text(
-                          'Job Title',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          '*',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ]),
-                      SizedBox(
-                        height: Sizes.responsiveXs(context),
-                      ),
-                      CustomTextField(
-                        controller: jobTitleController,
-                        hintText: '',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Job Title is required';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  const Text(
-                    'Skill Set Used',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w500),
-                  ),
-
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: Sizes.responsiveXs(context),
-                ),
-                CustomTextField(
-                  controller: skillSetController,
-                  hintText: '',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Skill Set is required';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(width: Sizes.responsiveSm(context)),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(children: [
-                  const Text(
-                    'Joining Date',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: Sizes.responsiveSm(context),
-                ),
-
-                GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: AbsorbPointer(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Sizes.radiusXs),
-                        border: Border.all(width: 0.37, color: AppColors.black),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.calendar_today,
-                              size: 14,
-                              color: AppColors.secondaryText,
-                            ),
-                          ),
-                          const VerticalDivider(
-                            thickness: 1.0,
-                            width: 0.37,
-                            color: AppColors.black,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: joiningDateController,
-                              cursorColor: AppColors.black,
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'YYYY-MM-DD',
-                                suffixIconColor: AppColors.secondaryText,
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: Sizes.responsiveSm(context),
-                                  horizontal: Sizes.responsiveMd(context),
-                                ),
-                                alignLabelWithHint: true,
-                                hintStyle: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.secondaryText,
-                                ),
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Row(children: [
-                  const Text(
-                    'Ending Date',
-                    style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: Sizes.responsiveSm(context),
-                ),
-
-                GestureDetector(
-                  onTap: () => _selectEndingDate(context),
-                  child: AbsorbPointer(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Sizes.radiusXs),
-                        border: Border.all(width: 0.37, color: AppColors.black),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.calendar_today,
-                              size: 14,
-                              color: AppColors.secondaryText,
-                            ),
-                          ),
-                          const VerticalDivider(
-                            thickness: 1.0,
-                            width: 0.37,
-                            color: AppColors.black,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: EndingDateController,
-                              cursorColor: AppColors.black,
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'YYYY-MM-DD',
-                                suffixIconColor: AppColors.secondaryText,
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: Sizes.responsiveSm(context),
-                                  horizontal: Sizes.responsiveMd(context),
-                                ),
-                                alignLabelWithHint: true,
-                                hintStyle: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.secondaryText,
-                                ),
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Sizes.responsiveMd(context)),
-            ],
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Sizes.radiusSm),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: Sizes.responsiveHorizontalSpace(context),
-                      horizontal: Sizes.responsiveMdSm(context),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) { // Validate the form
-                      bool success = await _saveExperience();
-                      if (success) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => ProfileScreen()),
-                        );
-                      }
-                    }
-                  },
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.primary, width: 0.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(Sizes.radiusSm),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: Sizes.responsiveSm(context),
-                      horizontal: Sizes.responsiveMdSm(context),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) { // Validate the form
-                      bool success = await _saveExperience();
-                      if (success) {
-                      //   Navigator.of(context).push(
-                      //     MaterialPageRoute(builder: (context) => AddExperience()),
-                      //   );
-
-                      }
-
-
-                    }
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
                       Text(
-                        'Save & Next',
+                        'Yes',
                         style: TextStyle(
-                          fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          fontSize: 11,
+                          color: experience == 'YES'
+                              ? Colors.black
+                              : AppColors.secondaryText,
                         ),
                       ),
-                      SizedBox(
-                        width: Sizes.responsiveXs(context),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'NO',
+                        groupValue: experience,
+                        onChanged: (value) {
+                          setState(() {
+                            experience = value!;
+                          });
+                        },
                       ),
-                      Icon(
-                        Icons.arrow_forward_ios_sharp,
-                        size: 11,
+                      Text(
+                        'No',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                          color: experience == 'NO'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              if (experience == 'YES') ...[
+                SizedBox(
+                  height: Sizes.responsiveMd(context)*0.4,
+                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'What type of work environment do you prefer?',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context)*0.4,
+                ),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'On-Site',
+                        groupValue: environment,
+                        onChanged: (value) => setState(() {
+                          environment = value!;
+                        }),
+                      ),
+                      Text(
+                        'On-Site',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 11,
+                          color: environment == 'On-Site'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'Hybrid',
+                        groupValue: environment,
+                        onChanged: (value) {
+                          setState(() {
+                            environment = value!;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Hybrid',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 11,
+                          color: environment == 'Hybrid'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'Remote',
+                        groupValue: environment,
+                        onChanged: (value) {
+                          setState(() {
+                            environment = value!;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Remote',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 11,
+                          color: environment == 'Remote'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context)*0.4,
+                ),
+              Row(
+                children: [
+                  const Text(
+                    'Is this your current company?',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+          
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context)*0.4,
+                ),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'YES',
+                        groupValue: currentCompany,
+                        onChanged: (value) => setState(() {
+                          currentCompany = value!;
+                        }),
+                      ),
+                      Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                          color: currentCompany == 'YES'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+          
+                  Row(
+                    children: [
+          
+                      Radio<String>(
+                        activeColor: Colors.blue,
+                        value: 'NO',
+                        groupValue: currentCompany,
+                        onChanged: (value) {
+                          setState(() {
+                            currentCompany = value!;
+                          });
+                        },
+                      ),
+                      Text(
+                        'No',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                          color: currentCompany == 'NO'
+                              ? Colors.black
+                              : AppColors.secondaryText,
+                        ),
+                      ),
+          
+                    ],
+                  ),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context)*0.4,
+                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const Text(
+                            'Organization Name',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            '*',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ]),
+                        SizedBox(
+                          height: Sizes.responsiveXs(context),
+                        ),
+                        CustomTextField(
+                          controller: organizationController,
+                          hintText: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Organization Name is required';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: Sizes.responsiveSm(context)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          const Text(
+                            'Job Title',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            '*',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ]),
+                        SizedBox(
+                          height: Sizes.responsiveXs(context),
+                        ),
+                        CustomTextField(
+                          controller: jobTitleController,
+                          hintText: '',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Job Title is required';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context),
+                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    const Text(
+                      'Skill Set Used',
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w500),
+                    ),
+          
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                         color: AppColors.primary,
                       ),
-                    ],
+                    ),
+                  ]),
+                  SizedBox(
+                    height: Sizes.responsiveXs(context),
                   ),
+                  CustomTextField(
+                    controller: skillSetController,
+                    hintText: '',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Skill Set is required';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(width: Sizes.responsiveSm(context)),
+                ],
+              ),
+                SizedBox(
+                  height: Sizes.responsiveMd(context),
                 ),
-
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(children: [
+                    const Text(
+                      'Joining Date',
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: Sizes.responsiveSm(context)*1.4,
+                  ),
+          
+                  GestureDetector(
+                    onTap: () => _selectDate(context),
+                    child: AbsorbPointer(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Sizes.radiusXs),
+                          border: Border.all(width: 0.37, color: AppColors.black),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.calendar_today,
+                                size: 14,
+                                color: AppColors.secondaryText,
+                              ),
+                            ),
+                            const VerticalDivider(
+                              thickness: 1.0,
+                              width: 0.37,
+                              color: AppColors.black,
+                            ),
+                            Expanded(
+                              child: TextField(
+                                controller: joiningDateController,
+                                cursorColor: AppColors.black,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'YYYY-MM-DD',
+                                  suffixIconColor: AppColors.secondaryText,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: Sizes.responsiveSm(context),
+                                    horizontal: Sizes.responsiveMd(context),
+                                  ),
+                                  alignLabelWithHint: true,
+                                  hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.secondaryText,
+                                  ),
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: Sizes.responsiveMd(context),
+                  ),
+                  Row(children: [
+                    const Text(
+                      'Ending Date',
+                      style: TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ]),
+                  SizedBox(
+                    height: Sizes.responsiveSm(context),
+                  ),
+          
+                  GestureDetector(
+                    onTap: () => _selectEndingDate(context),
+                    child: AbsorbPointer(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Sizes.radiusXs),
+                          border: Border.all(width: 0.37, color: AppColors.black),
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.calendar_today,
+                                size: 14,
+                                color: AppColors.secondaryText,
+                              ),
+                            ),
+                            const VerticalDivider(
+                              thickness: 1.0,
+                              width: 0.37,
+                              color: AppColors.black,
+                            ),
+                            Expanded(
+                              child: TextField(
+                                controller: EndingDateController,
+                                cursorColor: AppColors.black,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'YYYY-MM-DD',
+                                  suffixIconColor: AppColors.secondaryText,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: Sizes.responsiveSm(context),
+                                    horizontal: Sizes.responsiveMd(context),
+                                  ),
+                                  alignLabelWithHint: true,
+                                  hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.secondaryText,
+                                  ),
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Sizes.responsiveMd(context)),
               ],
-            ),
-            SizedBox(
-              height: Sizes.responsiveXs(context),
-            ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveHorizontalSpace(context),
+                        horizontal: Sizes.responsiveMdSm(context),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) { // Validate the form
+                        bool success = await _saveExperience();
+                        if (success) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => ProfileScreen()),
+                          );
+                        }
+                      }
+                    },
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
 
-          ]),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: AppColors.primary, width: 0.5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveSm(context),
+                        horizontal: Sizes.responsiveMdSm(context),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) { // Validate the form
+                        bool success = await _saveExperience();
+                        if (success) {
+                        //   Navigator.of(context).push(
+                        //     MaterialPageRoute(builder: (context) => AddExperience()),
+                        //   );
+
+                        }
+
+
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Save & Next',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        SizedBox(
+                          width: Sizes.responsiveXs(context),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_sharp,
+                          size: 11,
+                          color: AppColors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+              SizedBox(
+                height: Sizes.responsiveXs(context)*2,
+              ),
+          
+            ]),
+          ),
         ),
       ),
     );

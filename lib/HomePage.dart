@@ -191,6 +191,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building");
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -339,6 +340,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Row(
+
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -380,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.01),
+                    SizedBox(width: screenWidth * 0.007),
                     Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
@@ -421,7 +424,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.01),
+                    SizedBox(width: screenWidth * 0.007),
                     Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
@@ -438,7 +441,7 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Container(
-                                width: screenWidth * 0.05,
+                                width: screenWidth * 0.045,
                                 height: screenWidth * 0.05,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
@@ -448,12 +451,12 @@ class _HomePageState extends State<HomePage> {
                                     "images/interactive_space.png"
                                 )
                             ),
-                            SizedBox(width: screenWidth * 0.015),
+                            SizedBox(width: screenWidth * 0.01),
                             Text(
                               'Experienced Jobs',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: screenWidth * 0.025,
+                                fontSize: screenWidth * 0.023,
                               ),
                             ),
                           ],

@@ -101,7 +101,9 @@ class RegistrationController {
               }
             }
           }
-        } catch (e) {
+        }
+
+        catch (e) {
           print('Error parsing response: $e');
         }
 

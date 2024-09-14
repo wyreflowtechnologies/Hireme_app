@@ -175,7 +175,7 @@ class _VerificationStatusState extends State<VerificationStatus> {
                               children: [
                                 Container(
                                   width: screenWidth *
-                                      0.07, // Adjusted based on screen width
+                                      0.067, // Adjusted based on screen width
                                   height: screenWidth *
                                       0.07, // Adjusted based on screen width
                                   decoration: BoxDecoration(

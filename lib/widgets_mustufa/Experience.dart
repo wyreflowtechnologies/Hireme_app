@@ -124,7 +124,7 @@ class ExperienceChild extends StatelessWidget {
              ),
            ),
            SizedBox(
-             height: Sizes.responsiveXs(context),
+             height: Sizes.responsiveXs(context)*1,
            ),
            Text(
              jobType,

@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hiremi_version_two/PaymentFailedPage.dart';
 
@@ -25,7 +26,7 @@ class _VerificationScreen3State extends State<VerificationScreen3>   {
 
   final _formKey = GlobalKey<FormState>();
   String _fullName="";
-  double amount=10;
+  double amount=1;
   String Email="";
   int? SavedId;
   bool _isLoading = false; // Loading state variable
@@ -131,6 +132,66 @@ bool get wantKeepAlive => true;
     final email = prefs.getString('email') ?? 'No email saved';
     print(email);
     Email=email;
+
+  }
+  Future<void> _checkEmail() async {
+    const String apiUrl = "${ApiUrls.baseurl}/api/registers/";
+
+    try {
+      final response = await http.get(Uri.parse('$apiUrl?email=$Email'));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        for (var user in data) {
+          if (user['email'] == Email) {
+            await updateUserVerificationStatus(user['id']);
+            break;
+          }
+        }
+
+        if (data.isEmpty) {
+          print('No user found for email: $Email');
+        }
+      } else {
+        print('Failed to fetch user data');
+        print('Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> updateUserVerificationStatus(int userId) async {
+    final String updateUrl = "${ApiUrls.baseurl}/api/registers/$userId/";
+
+    try {
+      final response = await http.patch(
+        Uri.parse(updateUrl),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'verified': true,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print('User verification updated successfully: $data');
+
+        if (data['verified'] == true) {
+          //_showVerificationNotification();
+        }
+      } else {
+        print('Failed to update user verification');
+        print('Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
   Future<void> _fetchFullName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -148,20 +209,24 @@ bool get wantKeepAlive => true;
       // Handle the transaction response
 
       if (transactionResponse != null && transactionResponse['STATUS'] == 'TXN_SUCCESS') {
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (ctx) => const VerifiedPage()));
-        // print("Success");
+
+        print("Success in _initiateTransaction");
         print("transaction Succesfully");
+
+        await _postVerificationDetails();
         checkOrderStatus(orderId);
 
 
         return transactionResponse;
-      } else {
+      }
+      else {
+        _navigateToPaymentFailedPage();
         checkOrderStatus(orderId);
         throw Exception('Transaction failed bhai: ${transactionResponse!['RESPMSG']}');
       }
+
     } catch (e) {
-      // Error occurred during transaction initiation
+
       throw Exception('Errorsassa initiating transaction: $e');
     }
   }
@@ -176,8 +241,14 @@ bool get wantKeepAlive => true;
     );
   }
   final String orderStatusUrl = '${ApiUrls.baseurl}/order-status/';
-
+  void goToNextPage() {
+    _checkEmail();
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => const VerifiedPage()));
+  }
   Future<void> _postVerificationDetails() async {
+
+
 
     try {
       final url = '${ApiUrls.baseurl}/api/verification-details/';
@@ -196,6 +267,8 @@ bool get wantKeepAlive => true;
 
       if (response.statusCode == 201)
       {
+        goToNextPage();
+
         print('Verification details posted successfully');
         print(response.body);
 
@@ -217,7 +290,6 @@ bool get wantKeepAlive => true;
         body: jsonEncode({
           "order_id": orderId,
           "amount": 1.00,
-          // "txn_id":"434ebb76-d0a6-4112-9e64-5414ced4ab98",
         }),
       );
 
@@ -234,15 +306,11 @@ bool get wantKeepAlive => true;
 
         // Check if the status is "Success"
         if (responseBody['status'] == 'Success') {
-          await _postVerificationDetails();
 
-
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (ctx) => const VerifiedPage()));
         }
         else {
 
-          _navigateToPaymentFailedPage();
+
           print("Order is not complete");
           print("Status code in else ${response.statusCode}");
           print(response.body);
@@ -327,8 +395,8 @@ bool get wantKeepAlive => true;
               'TXNDATE': transactionResponse['TXNDATE'],
               'TXNID': transactionResponse['TXNID']
             };
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (ctx) => const VerifiedPage()));
+            // Navigator.of(context).push(MaterialPageRoute(
+            //     builder: (ctx) => const VerifiedPage()));
 
            print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
 
@@ -407,7 +475,7 @@ bool get wantKeepAlive => true;
 
           // Check if transactionResponse is not null and contains 'TXNID'
           if (transactionResponse != null && transactionResponse.containsKey('TXNID')) {
-            print("Helloin if section");
+
             var txnDetails = {
               'BANKTXNID': transactionResponse['BANKTXNID'],
               'CHECKSUMHASH': transactionResponse['CHECKSUMHASH'],
@@ -423,8 +491,9 @@ bool get wantKeepAlive => true;
               'TXNDATE': transactionResponse['TXNDATE'],
               'TXNID': transactionResponse['TXNID']
             };
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (ctx) => const VerifiedPage()));
+            // Navigator.of(context).push(MaterialPageRoute(
+            //     builder: (ctx) => const VerifiedPage()));
+
 
             print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
 
@@ -457,6 +526,8 @@ bool get wantKeepAlive => true;
 
 
   Future<void> _postTransactionResponse(String callbackUrll, Map<String, dynamic> response) async {
+
+
     print("we are in _postTransactionResponse");
     try {
       // Making POST request to callback URL with transaction response data
@@ -484,19 +555,11 @@ bool get wantKeepAlive => true;
     }
     catch (e) {
       // Error occurred while posting transaction response
-      print('Error posting transaction response: $e');
+      print('Error posting transaction response:$e');
     }
   }
   String? _selectedDomain;
-  // final List<String> _domains = [
-  //   'Website Development',
-  //   'MERN Development',
-  //   'Software Development',
-  //   'Frontend Development',
-  //   'Backend Development',
-  //   'Flutter UI Development',
-  //   'Java Development'
-  // ];
+
   final List<String> _domains = [
     'Website Development',
     'MERN Development',
@@ -663,6 +726,12 @@ bool get wantKeepAlive => true;
                             onPressed: _isLoading
                                 ? null  // Disable button when loading
                                 : () async {
+                              if (kDebugMode) {
+                                print('Running in release mode');
+                              }
+                              else {
+                                print('Running in debug or profile mode');
+                              }
                               if (_isAllFieldsValid()) {
                                _makeTransactionRequest(amount);
 
@@ -787,4 +856,6 @@ bool get wantKeepAlive => true;
       ],
     );
   }
+
+
 }
