@@ -155,12 +155,12 @@ class _EditResumePageState extends State<EditResumePage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a resume link';
+                    return 'Please provide a resume link';
                   }
                   final urlPattern = r'^(https?:\/\/)';
                   final regExp = RegExp(urlPattern, caseSensitive: false);
                   if (!regExp.hasMatch(value)) {
-                    return 'Please enter a valid URL';
+                    return 'Please provide a valid URL';
                   }
                   return null;
                 },

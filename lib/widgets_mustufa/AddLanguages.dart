@@ -303,8 +303,13 @@ class _AddLanguagesState extends State<AddLanguages> {
                   title: 'Add Language',
                   hintText: 'eg: Hindi, English etc.',
                   validator: (value) {
+                    final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for only letters and spaces
+
                     if (value == null || value.isEmpty) {
                       return 'Please enter a language';
+                    }
+                    else if (!characterRegex.hasMatch(value)) {
+                      return 'Only character are allowed';
                     }
                     return null;
                   },

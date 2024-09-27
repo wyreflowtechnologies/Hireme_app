@@ -379,6 +379,10 @@ void initState() {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your college name';
                           }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
+                          }
                           return null;
                         },
                       ),
@@ -438,6 +442,7 @@ void initState() {
                         dropdownItems: [
                           'B.Com',
                           'B.Sc',
+                          'BE',
                           'B.Tech',
                           'BBA',
                           'BCA',
@@ -447,7 +452,8 @@ void initState() {
                           'M.Tech',
                           'MBA',
                           'MCA',
-                          'Other',],
+                          'Other',
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your degree';

@@ -1,6 +1,8 @@
     
     
-    import 'package:flutter/material.dart';
+    import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Apis/api.dart';
     import 'package:hiremi_version_two/api_services/user_services.dart';
     import 'package:http/http.dart' as http;
@@ -60,7 +62,7 @@ import 'package:hiremi_version_two/Apis/api.dart';
                     ),
                   ),
                   Text(
-                    "Forget Your Password",
+                    "Forgot Your Password",
                     style: TextStyle(
                       fontSize: 21.0,
                       fontWeight: FontWeight.w600,
@@ -179,6 +181,16 @@ import 'package:hiremi_version_two/Apis/api.dart';
                                     Navigator.pushReplacement(
                                       context,
                                       SlidePageRoute(page: VerifyUrEmail()),
+                                    );
+                                  }
+                                  else{
+                                    final Map<String, dynamic> responseBody = jsonDecode(response.body);
+                                    final errorMessage = responseBody['message'] ?? 'Unknown error';
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(' $errorMessage'),
+                                        duration: Duration(seconds: 3),
+                                      ),
                                     );
                                   }
                                   setState(() {

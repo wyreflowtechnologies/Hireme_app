@@ -23,13 +23,13 @@ class VerificationScreen3 extends StatefulWidget {
 }
 
 class _VerificationScreen3State extends State<VerificationScreen3>   {
-
   final _formKey = GlobalKey<FormState>();
   String _fullName="";
-  double amount=1;
+  double amount=9;
   String Email="";
   int? SavedId;
   bool _isLoading = false; // Loading state variable
+  Map<String, dynamic>  taxDetailsforfailedpage={};
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
@@ -57,10 +57,13 @@ bool get wantKeepAlive => true;
       _printSavedEmail();
     }
   }
+
   bool _isAllFieldsValid() {
     return _formKey.currentState?.validate() ?? false;
   }
-
+  String responseText = "";
+  String callbackResponseText = "";
+  String transactionResponseText="";
 
   // Future<void> _retrieveId() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -132,7 +135,6 @@ bool get wantKeepAlive => true;
     final email = prefs.getString('email') ?? 'No email saved';
     print(email);
     Email=email;
-
   }
   Future<void> _checkEmail() async {
     const String apiUrl = "${ApiUrls.baseurl}/api/registers/";
@@ -212,22 +214,33 @@ bool get wantKeepAlive => true;
 
         print("Success in _initiateTransaction");
         print("transaction Succesfully");
+          print(transactionResponse);
+          setState(() {
+            transactionResponseText=transactionResponse.toString();
+          });
+       //   _postVerificationDetails();
 
-        await _postVerificationDetails();
-        checkOrderStatus(orderId);
+          checkOrderStatus(orderId);
 
 
-        return transactionResponse;
+          return transactionResponse;
       }
       else {
-        _navigateToPaymentFailedPage();
+        print("taxDetailsforfailedpage is  $taxDetailsforfailedpage");
+
+      //  _navigateToPaymentFailedPage();
+
         checkOrderStatus(orderId);
+        setState(() {
+          transactionResponseText=transactionResponse.toString();
+        });
+        print("$transactionResponseText in error");
         throw Exception('Transaction failed bhai: ${transactionResponse!['RESPMSG']}');
       }
 
     } catch (e) {
 
-      throw Exception('Errorsassa initiating transaction: $e');
+      throw Exception('Error initiating transaction: $e');
     }
   }
 
@@ -236,6 +249,7 @@ bool get wantKeepAlive => true;
       MaterialPageRoute(
         builder: (ctx) => PaymentFailedPage(
           onTryAgain: _makeTransactionRequestforFailedPayment,
+          taxDetailsforfailedpage: taxDetailsforfailedpage,
         ),
       ),
     );
@@ -289,11 +303,12 @@ bool get wantKeepAlive => true;
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "order_id": orderId,
-          "amount": 1.00,
+          "amount": amount,
         }),
       );
 
       if (response.statusCode == 200) {
+
 
         print("Success");
         print("Order is complete");
@@ -309,7 +324,7 @@ bool get wantKeepAlive => true;
 
         }
         else {
-
+//_navigateToPaymentFailedPage();
 
           print("Order is not complete");
           print("Status code in else ${response.statusCode}");
@@ -333,6 +348,8 @@ bool get wantKeepAlive => true;
     setState(() {
       _isLoading = true; // Start loading
     });
+
+
 
     try {
       print("Helllo");
@@ -395,14 +412,21 @@ bool get wantKeepAlive => true;
               'TXNDATE': transactionResponse['TXNDATE'],
               'TXNID': transactionResponse['TXNID']
             };
+
+            setState(() {
+              responseText = txnDetails.toString();
+            });
+            print("txnDetails is $txnDetails");
+            taxDetailsforfailedpage=txnDetails;
             // Navigator.of(context).push(MaterialPageRoute(
             //     builder: (ctx) => const VerifiedPage()));
 
-           print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
+            print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
 
             // Post transaction response to callback URL
             await _postTransactionResponse(callbackUrll, txnDetails);
           } else {
+              print("It is empty");
            print('Error: Transaction failed or missing transaction ID in response');
           }
         } else {
@@ -494,18 +518,24 @@ bool get wantKeepAlive => true;
             // Navigator.of(context).push(MaterialPageRoute(
             //     builder: (ctx) => const VerifiedPage()));
 
-
+           //  taxDetailsforfailedpage=txnDetails;
             print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
 
             // Post transaction response to callback URL
             await _postTransactionResponse(callbackUrll, txnDetails);
+
           } else {
+            print("It is empty");
+
             print('Error: Transaction failed or missing transaction ID in response');
           }
         } else {
           print('Error: Missing required data in response');
         }
-      } else {
+      }
+
+
+      else {
         // Request failed
         print(response.statusCode);
         print(response.body);
@@ -530,6 +560,9 @@ bool get wantKeepAlive => true;
 
     print("we are in _postTransactionResponse");
     try {
+      // setState(() {
+      //   responseText = json.encode(response);
+      // });
       // Making POST request to callback URL with transaction response data
       var callbackResponse = await http.post(
         Uri.parse(callbackUrll),
@@ -542,15 +575,27 @@ bool get wantKeepAlive => true;
 
         print('Transaction response posted successfully');
         print(callbackResponse.statusCode);
-        print(callbackResponse.body);
+        print("Callback response is ${callbackResponse.body}");
         // console.log(callbackResponse.body);
+        print("response is $response");
+        var callbackResponseBody = json.decode(callbackResponse.body);
 
+        if (callbackResponseBody['verifySignature'] == true) {
+           print("Hello");
+        //  _postVerificationDetails();
+        }
         // Redirect to CallbackScreen
 
       }
 
       else {
-        print('Failed to post transaction response. Status code: ${callbackResponse.statusCode}');
+        print("callback in else ${callbackResponse.statusCode}");
+        print(callbackResponse.body);
+        print("response is $response");
+        setState(() {
+          callbackResponseText = "Failed to post transaction response. Status code: ${callbackResponse.statusCode} ${callbackResponse.body}";
+        });
+        print('Failed to post transaction response. Status code: ${callbackResponse.statusCode} ${callbackResponse.body}');
       }
     }
     catch (e) {
@@ -561,21 +606,22 @@ bool get wantKeepAlive => true;
   String? _selectedDomain;
 
   final List<String> _domains = [
-    'Website Development',
-    'MERN Development',
-    'Software Development',
-    'Frontend Development',
     'Backend Development',
-    'Flutter UI Development',
-    'Java Development',
-    'Finance Management',
-    'Marketing Management',
-    'Human Resource Management',
-    'Operations Management',
     'Business Analytics',
+    'Finance Management',
+    'Flutter UI Development',
+    'Frontend Development',
+    'Human Resource Management',
     'International Business',
+    'Java Development',
+    'Marketing Management',
+    'MERN Development',
+    'Operations Management',
+    'Software Development',
     'Supply Chain Management',
+    'Website Development',
   ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -672,10 +718,13 @@ bool get wantKeepAlive => true;
                       "Ex->0105IT171125",
                       controller: _EnrollementNumberController,
                       validator: (value) {
+                        final alphanumericRegex = RegExp(r'^[a-zA-Z0-9]+$');
+
                         if (value == null || value.isEmpty) {
                           return 'Please enter your enrollment number';
+                        } else if (!alphanumericRegex.hasMatch(value)) {
+                          return 'Only letters and numbers are allowed';
                         }
-
                         return null;
                       },
                     ),
@@ -689,6 +738,12 @@ bool get wantKeepAlive => true;
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please select your Domain';
+                        }
+                        final specialCharPattern = RegExp(r'[!@#\$%^&*(),.?":{}|<>]');
+
+                        // Check if the value contains special characters
+                        if (specialCharPattern.hasMatch(value)) {
+                          return 'Special characters are not allowed in Domain';
                         }
                         return null;
                       },
@@ -770,6 +825,31 @@ bool get wantKeepAlive => true;
                 ),
               ),
             ),
+            Column(
+              mainAxisSize: MainAxisSize.min,  // Let the column shrink-wrap its children
+              children: [
+                Text("Response:"),
+                Flexible(  // Use Flexible instead of Expanded to allow child to take only necessary space
+                  child: SingleChildScrollView(
+                    child: Text(
+                      // Display your response here
+                      responseText,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.0),  // For spacing
+                Text("transactionResponseText Response:"),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      // Display your callback response here
+                      transactionResponseText,
+                    ),
+                  ),
+                ),
+              ],
+            )
+
           ],
         ),
       ),

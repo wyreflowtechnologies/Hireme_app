@@ -320,7 +320,13 @@ Future<void> _updateUserData() async {
                             return 'Please enter your phone number';
                           }
                           if (value.length < 10) {
-                            return 'Please enter a valid phone number';
+                            return 'Please enter a 10 digit phone number';
+                          }
+                          if (value.length > 10) {
+                            return 'Please enter a 10 digit Phone number';
+                          }
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                            return 'Special characters are not allowed';
                           }
                           return null;
                         },
@@ -337,6 +343,13 @@ Future<void> _updateUserData() async {
                           }
                           if (value.length < 10) {
                             return 'Please enter a valid WhatsApp number';
+                          }
+                          if (value.length > 10) {
+                            return 'Please enter a valid WhatsApp number';
+                          }
+
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                            return 'Please enter a valid WhatsApp number without special characters';
                           }
                           return null;
                         },

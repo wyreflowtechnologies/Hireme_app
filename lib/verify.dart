@@ -182,7 +182,7 @@ Future<void> _updateUserProfile() async {
       id: _userId.toString(),
       fullName: _fullNameController.text,
       fatherName: _fatherNameController.text,
-      email: _emailController.text,
+      email: _emailController.text.toLowerCase(),
       dateOfBirth: _dobController.text,
       birthPlace: _birthPlaceController.text,
       gender: _selectedGender.toString().split('.').last, // Add gender property if necessary
@@ -322,6 +322,12 @@ Future<void> _updateUserProfile() async {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your full name';
                           }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+
+                          // Check if the value contains special characters
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
+                          }
                           return null;
                         },
                       ),
@@ -333,6 +339,12 @@ Future<void> _updateUserProfile() async {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your father\'s full name';
+                          }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+
+                          // Check if the value contains special characters
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
                           }
                           return null;
                         },
@@ -350,6 +362,9 @@ Future<void> _updateUserProfile() async {
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Please enter a valid email address';
                           }
+                          // if (!value.toLowerCase().endsWith('@gmail.com')) {
+                          //   return 'Only Gmail addresses are allowed';
+                          // }
                           return null;
                         },
                       ),
@@ -362,17 +377,39 @@ Future<void> _updateUserProfile() async {
                         controller: _dobController,
 
                         onTap: () async {
-                          final DateTime? pickedDate = await showDatePicker(
+                          final screenSize = MediaQuery.of(context).size;
+                          // final DateTime? pickedDate = await showDatePicker(
+                          //   context: context,
+                          //   initialDate: DateTime.now(),
+                          //   firstDate: DateTime(1900),
+                          //   lastDate: DateTime.now(),
+                          // );
+                          // if (pickedDate != null) {
+                          //   setState(() {
+                          //     _selectedDate = pickedDate;
+                          //     _dobController.text =
+                          //         DateFormat('yyyy-MM-dd').format(pickedDate);
+                          //   });
+                          // }
+                          final DateTime? pickedDate=await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: DateTime(2017, 12, 31), // Set a valid initial date within the range
                             firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
+                            lastDate: DateTime(2017, 12, 31), // Set lastDate to December 31, 2017
+                            builder: (BuildContext context, Widget? child) {
+                              return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  // Adjust text scale for larger/smaller screens
+                                  textScaleFactor: screenSize.width * 0.00225,
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
                           if (pickedDate != null) {
                             setState(() {
                               _selectedDate = pickedDate;
-                              _dobController.text =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              _dobController.text =DateFormat('yyyy-MM-dd').format(pickedDate);
                             });
                           }
                         },
@@ -484,6 +521,7 @@ Widget buildLabeledTextField(
           ),
         ),
       ),
+
       SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
       Padding(
         padding: EdgeInsets.symmetric(

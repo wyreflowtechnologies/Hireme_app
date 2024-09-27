@@ -45,7 +45,7 @@ class _RegistersState extends State<Registers> {
     'confirmPassword': FocusNode(),
   };
   Gender? _selectedGender=Gender.Male;
-  String? _selectedState;
+  //String? _selectedState;
   DateTime? _selectedDate;
   bool _isObscure = true;
   bool _isConfirmPasswordObscure = true;
@@ -83,11 +83,14 @@ final List<String> _states = [
   'Uttar Pradesh',
   'Uttarakhand',
   'West Bengal',
-  'Chandigarh',
-  'Delhi',
-  'Jammu and Kashmir',
-  'Lakshadweep',
-  'Puducherry',
+  'Chandigarh', // Union Territory
+  'Delhi', // National Capital Territory
+  'Jammu and Kashmir', // Union Territory
+  'Ladakh', // Union Territory
+  'Lakshadweep', // Union Territory
+  'Puducherry', // Union Territory
+  'Andaman and Nicobar Islands', // Union Territory
+  'Dadra and Nagar Haveli and Daman and Diu', // Union Territory
 ];
 
 
@@ -113,8 +116,8 @@ final List<String> _states = [
       _selectedGender = value;
     });
   }
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  // bool _obscurePassword = true;
+  // bool _obscureConfirmPassword = true;
 
 
   @override
@@ -403,8 +406,13 @@ final List<String> _states = [
                         controller: _fullNameController,
                         focusNode: _focusNodes['fullName'],
                         validator: (value) {
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
                           if (value == null || value.isEmpty) {
                             return 'Please enter your full name';
+                          }
+
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
                           }
                           return null;
                         },
@@ -417,8 +425,12 @@ final List<String> _states = [
                         focusNode: _focusNodes['fatherName'],
         
                         validator: (value) {
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
                           if (value == null || value.isEmpty) {
                             return 'Please enter your father\'s full name';
+                          }
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
                           }
                           return null;
                         },
@@ -431,8 +443,24 @@ final List<String> _states = [
                         controller: _emailController,
                         focusNode: _focusNodes['email'],
                         validator: (value) {
+                          final emojiRegex = RegExp(
+                              r'[\u{1F600}-\u{1F64F}]|' // Emoticons
+                              r'[\u{1F300}-\u{1F5FF}]|' // Misc Symbols and Pictographs
+                              r'[\u{1F680}-\u{1F6FF}]|' // Transport and Map
+                              r'[\u{1F700}-\u{1F77F}]|' // Alchemical Symbols
+                              r'[\u{1F780}-\u{1F7FF}]|' // Geometric Shapes Extended
+                              r'[\u{1F800}-\u{1F8FF}]|' // Supplemental Arrows-C
+                              r'[\u{1F900}-\u{1F9FF}]|' // Supplemental Symbols and Pictographs
+                              r'[\u{1FA00}-\u{1FA6F}]|' // Chess Symbols
+                              r'[\u{1FA70}-\u{1FAFF}]|' // Symbols and Pictographs Extended-A
+                              r'[\u{2600}-\u{26FF}]',    // Misc symbols like sun, moon
+                              unicode: true
+                          );
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email address';
+                          }
+                          else if (emojiRegex.hasMatch(value)) {
+                            return 'Emojis are not allowed';
                           }
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Please enter a valid email address';
@@ -458,21 +486,37 @@ final List<String> _states = [
                         },
                         onTap: () async {
                           final screenSize = MediaQuery.of(context).size;
-                          final DateTime? pickedDate = await showDatePicker(
+                            // final DateTime? pickedDate = await showDatePicker(
+                            //   context: context,
+                            //   initialDate: DateTime.now(),
+                            //   firstDate: DateTime(1900),
+                            //   lastDate:DateTime(2017, 12, 31),
+                            //   builder: (BuildContext context, Widget? child) {
+                            //     return MediaQuery(
+                            //       data: MediaQuery.of(context).copyWith(
+                            //         // Adjust text scale for larger/smaller screens
+                            //         textScaleFactor: screenSize.width*0.00225,
+                            //       ),
+                            //       child: child!,
+                            //     );
+                            //   },
+                            // );
+                          final DateTime? pickedDate=await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: DateTime(2017, 12, 31), // Set a valid initial date within the range
                             firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
+                            lastDate: DateTime(2017, 12, 31), // Set lastDate to December 31, 2017
                             builder: (BuildContext context, Widget? child) {
                               return MediaQuery(
                                 data: MediaQuery.of(context).copyWith(
                                   // Adjust text scale for larger/smaller screens
-                                  textScaleFactor: screenSize.width*0.00225,
+                                  textScaleFactor: screenSize.width * 0.00225,
                                 ),
                                 child: child!,
                               );
                             },
                           );
+
                           if (pickedDate != null) {
                             setState(() {
                               _selectedDate = pickedDate;
@@ -528,10 +572,10 @@ final List<String> _states = [
                             return 'Please enter your phone number';
                           }
                           if (value.length < 10) {
-                            return 'Please enter a valid phone number';
+                            return 'Please enter a 10 digit phone number';
                           }
                           if (value.length > 10) {
-                            return 'Please enter a valid Phone number';
+                            return 'Please enter a 10 digit Phone number';
                           }
                           if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                             return 'Special characters are not allowed';
@@ -539,8 +583,6 @@ final List<String> _states = [
                           return null;
                         },
                       ),
-        
-        
                       buildLabeledTextField(
                         context,
                         "WhatsApp Number",
@@ -577,6 +619,10 @@ final List<String> _states = [
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your college name';
+                          }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
                           }
                           return null;
                         },
@@ -619,11 +665,14 @@ final List<String> _states = [
                           'Uttar Pradesh',
                           'Uttarakhand',
                           'West Bengal',
-                          'Chandigarh',
-                          'Delhi',
-                          'Jammu and Kashmir',
-                          'Lakshadweep',
-                          'Puducherry',
+                          'Chandigarh', // Union Territory
+                          'Delhi', // National Capital Territory
+                          'Jammu and Kashmir', // Union Territory
+                          'Ladakh', // Union Territory
+                          'Lakshadweep', // Union Territory
+                          'Puducherry', // Union Territory
+                          'Andaman and Nicobar Islands', // Union Territory
+                          'Dadra and Nagar Haveli and Daman and Diu', // Union Territory
                         ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -673,8 +722,10 @@ final List<String> _states = [
                         controller:_degreeController,
                         focusNode: _focusNodes['degree'],
         
-                        dropdownItems: [ 'B.Com',
+                        dropdownItems: [
+                          'B.Com',
                           'B.Sc',
+                          'BE',
                           'B.Tech',
                           'BBA',
                           'BCA',
@@ -684,7 +735,8 @@ final List<String> _states = [
                           'M.Tech',
                           'MBA',
                           'MCA',
-                          'Other',],
+                          'Other',
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your degree';
@@ -705,6 +757,7 @@ final List<String> _states = [
                           if (value == null || value.isEmpty) {
                             return 'Please enter your passing year';
                           }
+
                           return null;
                         },
                       ),
@@ -720,12 +773,24 @@ final List<String> _states = [
                         prefixIcon: Icons.lock_outline,
                         obscureText:_isConfirmPasswordObscure,
                         validator: (value) {
+                          final specialCharacterPattern = r'[^a-zA-Z0-9]';
+                          final numberPattern = r'\d';
+                          final letterPattern = r'[a-zA-Z]';
                           if (value == null || value.isEmpty) {
         
                             return 'Please enter your password';
                           }
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
+                          }
+                          if (!RegExp(specialCharacterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one special character';
+                          }
+                          if (!RegExp(numberPattern).hasMatch(value)) {
+                            return 'Password must contain at least one number';
+                          }
+                          if (!RegExp(letterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one letter';
                           }
                           return null;
                         },
@@ -739,6 +804,7 @@ final List<String> _states = [
                           child: Icon(_isConfirmPasswordObscure ? Icons.visibility_off : Icons.visibility),
                         ),
                       ),
+
                       buildLabeledTextField(
                         context,
                         "Confirm Password",
@@ -749,12 +815,24 @@ final List<String> _states = [
                         focusNode: _focusNodes['confirmPassword'],
         
                         validator: (value) {
+                          final specialCharacterPattern = r'[^a-zA-Z0-9]';
+                          final numberPattern = r'\d';
+                          final letterPattern = r'[a-zA-Z]';
                           if (value == null || value.isEmpty) {
         
                             return 'Please enter your password';
                           }
                           if (value != _passwordController.text) {
                             return 'Passwords do not match';
+                          }
+                          if (!RegExp(specialCharacterPattern).hasMatch(value)) {
+                            return 'Confirm Password must contain at least one special character';
+                          }
+                          if (!RegExp(numberPattern).hasMatch(value)) {
+                            return 'Password must contain at least one number';
+                          }
+                          if (!RegExp(letterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one letter';
                           }
                           return null;
                         },
@@ -780,7 +858,7 @@ final List<String> _states = [
                           fullName: _fullNameController.text,
                           fatherName: _fatherNameController.text,
                           gender: _selectedGender ?? Gender.Other,
-                          email: _emailController.text,
+                          email: _emailController.text.toLowerCase(),
                           dob: _dobController.text,
                           birthPlace: _birthPlaceController.text,
                           phone: _phoneController.text,
@@ -817,7 +895,7 @@ final List<String> _states = [
         
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Please filled your details correctly'),
+                            content: Text('Please fill your details correctly'),
                             duration: Duration(seconds: 5),
                           ),
                         );

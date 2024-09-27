@@ -157,8 +157,8 @@ class _LogInState extends State<LogIn> {
       Uri.parse(apiUrl),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        "email": _emailController.text,
-        "password": _passwordController.text,
+        "email": _emailController.text.trim(),
+        "password": _passwordController.text.trim(),
       }),
     );
     setState(() {
@@ -166,8 +166,8 @@ class _LogInState extends State<LogIn> {
     });
 
     if (response.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', _emailController.text); // Save email to SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('email', _emailController.text.trim()); // Save email to SharedPreferences
 
       print("Login successful");
       print(response.body);
@@ -312,7 +312,7 @@ class _LogInState extends State<LogIn> {
                           offset: const Offset(0, -17), // Adjust the value to move the text upward
                           child: TextButton(
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.blue, // Change this to the color you want
+                              foregroundColor: Colors.blueAccent, // Change this to the color you want
                             ),
                             onPressed: () {
                               Navigator.push(
@@ -321,7 +321,7 @@ class _LogInState extends State<LogIn> {
                               );
                             },
                             child: Text(
-                              'Forget Password?',
+                              'Forgot Password?',
                               style: TextStyle(color: Colors.blueAccent), // Adjust text color as needed
                             ),
                           ),
@@ -417,12 +417,13 @@ class _LogInState extends State<LogIn> {
                       SizedBox(height: MediaQuery.of(context).size.height * 0.018),
                       Center(
                         child: CustomElevatedButton(
-                          color: Color(0xFFF5F4F4),
+                         // color: Color(0xFFF5F4F4),
+                           color: Color(0xFFC1272D),
                           width: MediaQuery.of(context).size.width * 0.775,
                           height: MediaQuery.of(context).size.height * 0.0625,
                           text: 'Register Now',
                           textStyle: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w400,
                           ),
                           onPressed: () {

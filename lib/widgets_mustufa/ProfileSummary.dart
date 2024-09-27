@@ -32,17 +32,22 @@ class _ProfileSummaryState extends State<ProfileSummary> {
     return FutureBuilder<String?>(
       future: _profileSummaryFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting)
+        {
           return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
+        }
+        else if (snapshot.hasError)
+        {
           print('Error fetching profile summary: ${snapshot.error}'); // Debug print
           return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        }
+        else if (!snapshot.hasData || snapshot.data!.isEmpty)
+        {
           print('No profile summary available'); // Debug print
           return OutlinedContainer(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => AddProfileSummary()),
-            ),
+            // onTap: () => Navigator.of(context).push(
+            //   MaterialPageRoute(builder: (context) => AddProfileSummary()),
+            // ),
             title: 'Profile Summary',
             isTrue: false,
             child: const Text(

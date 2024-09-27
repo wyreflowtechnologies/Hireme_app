@@ -160,24 +160,26 @@ class _CustomAlertboxState extends State<CustomAlertbox> {
                 ),
                 child: TextButton(
                   onPressed: () {
-                    if (_storedNumber == '0') {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const VerificationScreen()));
-                    } else if (_storedNumber == '25') {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const VerificationScreen1()));
-                    } else if (_storedNumber == '50') {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const VerificationScreen2()));
-                    }
-                    else if (_storedNumber == '75') {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const VerificationScreen3()));
-                    }
-                    else {
-                      // Handle other cases or show an error
-                      print('Unknown stored number: $_storedNumber');
-                    }
+                    // if (_storedNumber == '0') {
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => const VerificationScreen()));
+                    // } else if (_storedNumber == '25') {
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => const VerificationScreen1()));
+                    // } else if (_storedNumber == '50') {
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => const VerificationScreen2()));
+                    // }
+                    // else if (_storedNumber == '75') {
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) => const VerificationScreen3()));
+                    // }
+                    // else {
+                    //   // Handle other cases or show an error
+                    //   print('Unknown stored number: $_storedNumber');
+                    // }
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const VerificationScreen()));
                   },
                   child: const Text(
                     'Review & Verify Now >',

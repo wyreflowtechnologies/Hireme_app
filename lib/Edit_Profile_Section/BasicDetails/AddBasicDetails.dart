@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../API_Integration/Add Basic Details/apiServices.dart';
 
 class AddBasicDetails extends StatefulWidget {
-  const AddBasicDetails({Key? key}) : super(key: key);
+  const   AddBasicDetails({Key? key}) : super(key: key);
 
   @override
   State<AddBasicDetails> createState() => _AddBasicDetailsState();
@@ -49,6 +49,7 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
     });
 
     print("Saved email is $_savedEmail");
+    return null;
 
   }
   Future<void> _loadBasicDetails() async {
@@ -59,7 +60,7 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
       looking_forController.text = details['looking_for'] ?? '';
       cityController.text = details['city'] ?? '';
       stateController.text = details['state'] ?? '';
-      emailController.text = details['email'] ?? '';
+      emailController.text= details['email'] ?? '';
       phoneController.text = details['phone_number'] ?? '';
       whatsappController.text = details['whatsapp_number'] ?? '';
     });
@@ -98,7 +99,7 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
         "looking_for": looking_forController.text,
         "city": cityController.text,
         "state": stateController.text,
-        "email": emailController.text,
+        "email": emailController.text.toLowerCase(),
         "phone_number": phoneController.text,
         "whatsapp_number": whatsappController.text,
         "profile": profileId,
@@ -112,14 +113,16 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
         //   SnackBar(content: Text('Details added/updated ssaasassasauccessfully')),
         // );
        // Return true to indicate success
-      } else {
+      }
+      else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add/update details')),
+          const SnackBar(content: Text('Failed to add/update details')),
         );
       }
-    } else {
+    }
+    else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in all required fields correctly')),
+        const SnackBar(content: Text('Please fill in all required fields correctly')),
       );
     }
   }
@@ -139,7 +142,7 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
           IconButton(
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => NotificationScreen()));
+                    MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
               },
               icon: const Icon(Icons.notifications))
         ],
@@ -188,6 +191,7 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
                       scrollDirection: Axis.horizontal,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Radio(
                               activeColor: Colors.blue,
@@ -282,8 +286,12 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
                               controller: cityController,
                               hintText: 'City',
                               validator: (value) {
+                                final characterRegex = RegExp(r'^[a-zA-Z\s]+$');
+
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your city';
+                                } else if (!characterRegex.hasMatch(value)) {
+                                  return 'Only letters are allowed';
                                 }
                                 return null;
                               },
@@ -320,8 +328,12 @@ class _AddBasicDetailsState extends State<AddBasicDetails> {
                               controller: stateController,
                               hintText: 'State',
                               validator: (value) {
+                                final characterRegex = RegExp(r'^[a-zA-Z\s]+$');
+
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your state';
+                                  return 'Please enter your city';
+                                } else if (!characterRegex.hasMatch(value)) {
+                                  return 'Only letters are allowed';
                                 }
                                 return null;
                               },

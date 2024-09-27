@@ -48,7 +48,7 @@ class EligibilityCriteriaAboutCompanyInternship extends StatelessWidget {
               //     text: 'Branch: All branches are eligible.'),
               buildBulletPoint(
                   context: context,
-                  number: '3.',
+                  number: '',
                   text:
                   '$whoCanApply'),
             ],

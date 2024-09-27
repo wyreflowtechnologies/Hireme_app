@@ -74,7 +74,7 @@ class _ConformationAlertboxState extends State<ConformationAlertbox> {
                 height: screenHeight * 0.01,
               ),
               Text(
-                'Are you Sure you want to log out',
+                'Are you Sure you want to log out?',
                 style: TextStyle(fontSize: MediaQuery.of(context).size.width*0.04,
                     fontWeight: FontWeight.bold),
               ),
