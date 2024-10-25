@@ -207,11 +207,23 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                         prefixIcon: Icons.lock_outline,
                         controller: _passwordController,
                         validator: (value) {
+                          final specialCharacterPattern = r'[^a-zA-Z0-9]';
+                          final numberPattern = r'\d';
+                          final letterPattern = r'[a-zA-Z]';
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
+                          }
+                          if (!RegExp(specialCharacterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one special character';
+                          }
+                          if (!RegExp(numberPattern).hasMatch(value)) {
+                            return 'Password must contain at least one number';
+                          }
+                          if (!RegExp(letterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one letter';
                           }
                           return null;
                         },
@@ -235,11 +247,15 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                         prefixIcon: Icons.lock_outline,
                         controller: _confirmPasswordController,
                         validator: (value) {
+                          final specialCharacterPattern = r'[^a-zA-Z0-9]';
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
                           }
                           if (value.length < 8) {
                             return 'Password must be at least 8 characters long';
+                          }
+                          if (!RegExp(specialCharacterPattern).hasMatch(value)) {
+                            return 'Password must contain at least one special character';
                           }
                           return null;
                         },

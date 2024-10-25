@@ -9,7 +9,7 @@ import 'package:hiremi_version_two/Utils/colors.dart';
 import '../../API_Integration/Add Education/apiServices.dart';
 
 class AddEducation extends StatefulWidget {
-  AddEducation({Key? key}) : super(key: key);
+  const AddEducation({Key? key}) : super(key: key);
 
   @override
   _AddEducationState createState() => _AddEducationState();
@@ -171,9 +171,11 @@ class _AddEducationState extends State<AddEducation> {
                   // ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please select an education level';
+                      return 'Please select your education level';
                     }
+
                     return null;
+
                   },
                 ),
                 SizedBox(
@@ -207,9 +209,15 @@ class _AddEducationState extends State<AddEducation> {
                   //   size: 15,
                   // ),
                   validator: (value) {
+                    final alphabetRegex = RegExp(r'^[a-zA-Z\s]+$');
+
                     if (value == null || value.isEmpty) {
-                      return 'Please select a subject or course';
+                      return 'Please select your Subject';
+                    } else if (!alphabetRegex.hasMatch(value)) {
+                      return 'Only letters  are allowed';
                     }
+                    return null;
+
                     return null;
                   },
                 ),
@@ -243,9 +251,14 @@ class _AddEducationState extends State<AddEducation> {
                   //   color: AppColors.black,
                   //   size: 15,
                   // ),
+                  textInputType: TextInputType.number,
                   validator: (value) {
+                    final numericRegex = RegExp(r'^[0-9]+$');  // Regular expression for numbers
+
                     if (value == null || value.isEmpty) {
                       return 'Please enter a passing out year';
+                    } else if (!numericRegex.hasMatch(value)) {
+                      return 'Only numbers are allowed';
                     }
                     return null;
                   },
@@ -275,10 +288,12 @@ class _AddEducationState extends State<AddEducation> {
                 CustomTextField(
                   controller: marksController,
                   hintText: 'eg: 84.99%',
+                  textInputType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter marks';
                     }
+
                     return null;
                   },
                 ),

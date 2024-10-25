@@ -363,6 +363,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/Custom_alert_box.dart';
 import 'package:hiremi_version_two/Custom_Widget/drawer_child.dart';
+import 'package:hiremi_version_two/Hiremi360/BottomNavbar360/BottomNavbar360.dart';
 import 'package:hiremi_version_two/HomePage.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
 import 'package:hiremi_version_two/Profile_Screen.dart';
@@ -483,7 +484,7 @@ class _NewNavbarState extends State<NewNavbar> {
 
   final List<String> _titles = [
     "Hiremi's Home",
-    'Applies',
+    'Applied',
     'Queries',
     'Profile'
   ];
@@ -563,7 +564,7 @@ class _NewNavbarState extends State<NewNavbar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildNavItem(Icons.home_filled, 'HOME', 0),
-                      _buildNavItem(Icons.list_alt_rounded, 'APPLIES', 1),
+                      _buildNavItem(Icons.list_alt_rounded, 'APPLIED', 1),
                       SizedBox(width: Sizes.responsiveXxl(context)),
                       _buildNavItem(Icons.local_activity_outlined, 'QUERIES', 2),
                       _buildNavItem(Icons.person_outline, 'PROFILE', 3),
@@ -581,6 +582,11 @@ class _NewNavbarState extends State<NewNavbar> {
             onPressed: () {
               if (!widget.isV) {
                 _showVerificationDialog();
+              }
+              else{
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const BottomNavbar360(),
+                ));
               }
             },
             elevation: 4,

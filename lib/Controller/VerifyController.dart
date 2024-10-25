@@ -7,50 +7,36 @@ import '../Apis/api.dart';
 
 
 class VerifyController {
+
   Future<String?> getStoredEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('email');
   }
 
-  Future<Verifymodel?> fetchUserProfile(String storedEmail) async {
+
+  Future<Verifymodel?> fetchUserProfile(String profileId) async {
     try {
+      // Make the API request directly with the profileId
       final response = await http.get(
-        Uri.parse('${ApiUrls.baseurl}/api/registers/'),
+        Uri.parse('http://13.127.246.196:8000/api/registers/$profileId'),
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        final userProfileData = data.firstWhere(
-              (profile) => profile['email'] == storedEmail,
-          orElse: () => null,
-        );
+        // Assuming the API returns a single profile object
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
-        if (userProfileData != null) {
-          return Verifymodel.fromJson(userProfileData);
-        }
+        // Convert the JSON data into the Verifymodel object
+        return Verifymodel.fromJson(data);
       }
     } catch (e) {
-      print('Errorsdsd: $e');
+      print('Error: $e'); // Handle any errors during the API call or parsing
     }
-    return null;
+
+    return null; // Return null in case of an error or invalid response
   }
 
-  // Future<bool> updateUserProfile(Verifymodel verifyModel) async {
-  //   try {
-  //     final response = await http.patch(
-  //       Uri.parse('http://13.127.81.177:8000/api/registers/${verifyModel.id}/'),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: jsonEncode(verifyModel.toJson()),
-  //     );
-  //
-  //     return response.statusCode == 200;
-  //   } catch (e) {
-  //     print('Error: $e');
-  //   }
-  //   return false;
-  // }
+
+
   Future<bool> updateUserProfile(Verifymodel verifyModel) async {
     try {
       final response = await http.patch(
@@ -62,11 +48,15 @@ class VerifyController {
       );
 
       if (response.statusCode == 200) {
+        print("response body is ${response.body}");
         print('Update successful');
         return true;
       } else {
+
         print('Update failed with status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        print('VerifyModel ID: ${verifyModel.id}');
+
+        print('Response bodysdjhbdshb: ${response.body}');
       }
     } catch (e) {
       print('Error updating user profile: $e');

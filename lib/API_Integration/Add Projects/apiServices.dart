@@ -129,10 +129,6 @@ class AddProjectDetailsService {
   }
 
   // Method to get the profile ID from local storage
-  Future<int?> _getProfileId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('profileId');
-  }
 
   // Method to get the detail ID from the server based on profile ID
   Future<int?> _getDetailId(int profileId) async {

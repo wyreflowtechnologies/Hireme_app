@@ -145,11 +145,17 @@ class _AddProjectsState extends State<AddProjects> {
                         title: 'Project Title',
                         hintText: 'eg: Project Title',
                         validator: (value) {
+                          final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for only letters and spaces
+
                           if (value == null || value.isEmpty) {
                             return 'Project Title is required';
+                          } else if (!characterRegex.hasMatch(value)) {
+                            return 'Only letters are allowed';
                           }
+
                           return null;
                         },
+
                       ),
                     ),
                     SizedBox(width: Sizes.responsiveMd(context)),
@@ -159,9 +165,14 @@ class _AddProjectsState extends State<AddProjects> {
                         title: 'Client',
                         hintText: 'eg: Organisation or Client etc.',
                         validator: (value) {
+                          final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for only letters and spaces
+
                           if (value == null || value.isEmpty) {
                             return 'Client is required';
+                          } else if (!characterRegex.hasMatch(value)) {
+                            return 'Only letters are allowed';
                           }
+
                           return null;
                         },
                       ),
@@ -172,6 +183,7 @@ class _AddProjectsState extends State<AddProjects> {
                 TextFieldWithTitle(
                   controller: projectLinkController,
                   title: 'Add Project Link',
+                  maxLines: 1,
                   hintText: 'eg: paste project link here.',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -302,8 +314,6 @@ class _AddProjectsState extends State<AddProjects> {
                       ),
                   ],
                 ),
-
-
                 SizedBox(height: Sizes.responsiveMd(context)),
                 TextFieldWithTitle(
                   title: 'Project Description',
@@ -312,9 +322,27 @@ class _AddProjectsState extends State<AddProjects> {
                   spaceBtwTextField: Sizes.responsiveMd(context),
                   maxLines: 3,
                   validator: (value) {
+                    final emojiRegex = RegExp(
+                        r'[\u{1F600}-\u{1F64F}]|' // Emoticons
+                        r'[\u{1F300}-\u{1F5FF}]|' // Misc Symbols and Pictographs
+                        r'[\u{1F680}-\u{1F6FF}]|' // Transport and Map
+                        r'[\u{1F700}-\u{1F77F}]|' // Alchemical Symbols
+                        r'[\u{1F780}-\u{1F7FF}]|' // Geometric Shapes Extended
+                        r'[\u{1F800}-\u{1F8FF}]|' // Supplemental Arrows-C
+                        r'[\u{1F900}-\u{1F9FF}]|' // Supplemental Symbols and Pictographs
+                        r'[\u{1FA00}-\u{1FA6F}]|' // Chess Symbols
+                        r'[\u{1FA70}-\u{1FAFF}]|' // Symbols and Pictographs Extended-A
+                        r'[\u{2600}-\u{26FF}]',    // Misc symbols like sun, moon
+                        unicode: true
+                    );
                     if (value == null || value.isEmpty) {
                       return 'Project Description is required';
                     }
+                    else if (emojiRegex.hasMatch(value)) {
+                      return 'Emojis are not allowed';
+                    }
+                    // else if (!characterRegex.hasMatch(value)) {
+                    //   return 'Only letters are allowed';// }
                     return null;
                   },
                 ),

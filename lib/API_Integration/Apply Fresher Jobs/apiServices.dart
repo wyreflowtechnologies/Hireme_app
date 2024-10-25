@@ -11,14 +11,12 @@ class ApiServices {
 
 
   static Future<void> applyForJob(int jobId, BuildContext context) async {
-    String profileId="";
     // final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final String? profileId = prefs.getString('profileId');
     final prefs = await SharedPreferences.getInstance();
     final int? savedId = prefs.getInt('userId');
     if (savedId != null) {
       print("Retrieved id is $savedId");
-      profileId=savedId.toString();
     } else {
       print("No id found in SharedPreferences");
     }

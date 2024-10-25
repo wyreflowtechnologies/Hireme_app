@@ -138,18 +138,21 @@ class _LanguagesState extends State<Languages> {
             .where((lang) => lang['profile'] == profileId)
             .toList();
 
-        if (filteredLanguages.isNotEmpty) {
+        if (filteredLanguages.isNotEmpty){
           setState(() {
             // Only take the languages from the last entry
             String lastLanguageEntry = filteredLanguages.last['language'];
             // Split the last language entry by spaces
-            languagesList = lastLanguageEntry.split(',');
+            languagesList = lastLanguageEntry.split(' ');
           });
         }
-      } else {
+      }
+
+      else {
         print('Failed to fetch languages: ${response.body}');
       }
-    } catch (e) {
+    }
+      catch (e) {
       print('Error occurred: $e');
     }
   }

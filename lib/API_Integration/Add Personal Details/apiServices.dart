@@ -33,7 +33,7 @@ class AddPersonalDetailsService {
       if (detailId != null) {
         // If detailId exists, update the existing record
         print('Updating existing personal details for profile ID: $profileId with detail ID: $detailId');
-        return await updatePersonalDetails(detailId!, details);
+        return await updatePersonalDetails(detailId, details);
       } else {
         // If no detailId exists, it means the check did not find the existing record.
         // Ensure that the profile ID is included in the details

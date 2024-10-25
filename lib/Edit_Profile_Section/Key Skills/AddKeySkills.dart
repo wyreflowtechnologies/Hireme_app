@@ -31,7 +31,7 @@ class _AddKeySkillsState extends State<AddKeySkills> {
   Future<void> _loadKeySkills() async {
     final loadedSkills = await _apiService.getKeySkills();
     setState(() {
-      skillController.text = loadedSkills.join(', ');
+      skillController.text = loadedSkills.join(',');
     });
   }
 
@@ -42,7 +42,7 @@ class _AddKeySkillsState extends State<AddKeySkills> {
 
       if (profileId.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile ID not found')),
+          const SnackBar(content: Text('Profile ID not found')),
         );
         return;
       }
@@ -65,7 +65,7 @@ class _AddKeySkillsState extends State<AddKeySkills> {
         Future.delayed(const Duration(seconds: 0), () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (ctx) => NewNavbar(
+              builder: (ctx) => const NewNavbar(
                 initTabIndex: 3, // Navigate to Profile tab
                 isV: true, // Pass the verification status
               ),
@@ -76,12 +76,12 @@ class _AddKeySkillsState extends State<AddKeySkills> {
 
     } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add/update key skills')),
+          const SnackBar(content: Text('Failed to add/update key skills')),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill in the required fields correctly')),
+        const SnackBar(content: Text('Please fill in the required fields correctly')),
       );
     }
   }
@@ -139,8 +139,13 @@ class _AddKeySkillsState extends State<AddKeySkills> {
                   color: AppColors.secondaryText,
                 ),
                 validator: (value) {
+                  final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for only letters and spaces
+
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a skill';
+                    return 'Please enter a language';
+                  }
+                  else if (!characterRegex.hasMatch(value)) {
+                    return 'Only character are allowed';
                   }
                   return null;
                 },
@@ -148,17 +153,17 @@ class _AddKeySkillsState extends State<AddKeySkills> {
               SizedBox(
                 height: Sizes.responsiveXs(context),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Word Limit is 100-250 words.',
-                  style: TextStyle(
-                    fontSize: 8,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.secondaryText,
-                  ),
-                ),
-              ),
+              // Align(
+              //   alignment: Alignment.centerRight,
+              //   child: Text(
+              //     'Word Limit is 100-250 words.',
+              //     style: TextStyle(
+              //       fontSize: 8,
+              //       fontWeight: FontWeight.w400,
+              //       color: AppColors.secondaryText,
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: Sizes.responsiveMd(context),
               ),
@@ -202,7 +207,7 @@ class _AddKeySkillsState extends State<AddKeySkills> {
                       if (_formKey.currentState!.validate()) {
                         await _saveKeySkills(context);
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AddEducation()));
+                            builder: (context) => const AddEducation()));
                       }
                     },
                     child: Row(

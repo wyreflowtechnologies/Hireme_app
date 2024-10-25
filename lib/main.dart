@@ -22,8 +22,10 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+
         ChangeNotifierProvider(create: (_) => InternshipProvider()),
         ChangeNotifierProvider(create: (_) => JobsProvider()),
+       // ChangeNotifierProvider(create: (_) => TrainingProvider()),
         ChangeNotifierProvider(create: (_) => ExperiencedJobsProvider()),
         ChangeNotifierProvider(create: (_) => HomePageOppurtunity()),
       ],

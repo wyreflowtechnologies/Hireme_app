@@ -108,13 +108,27 @@ String _fullName="";
     _confirmPasswordController.dispose();
     super.dispose();
   }
+  String profileId="";
 @override
 void initState() {
   super.initState();
-  _fetchUserData();
+  _retrieveId();
   if (_fullName.isEmpty) {
     _fetchFullName();
   }
+}
+Future<void> _retrieveId() async {
+  final prefs = await SharedPreferences.getInstance();
+  final int? savedId = prefs.getInt('userId');
+  if (savedId != null) {
+    print("Retrieved id is $savedId");
+    profileId = savedId.toString();
+    print(profileId);
+    _fetchUserData(profileId);
+  } else {
+    print("No id found in SharedPreferences");
+  }
+
 }
 // Future<void> _fetchUserData() async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -174,60 +188,102 @@ void initState() {
       _fullName = fullName;
     });
   }
-  Future<void> _fetchUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedEmail = prefs.getString('email');
-    print("Stored Email: $storedEmail");
+  // Future<void> _fetchUserData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? storedEmail = prefs.getString('email');
+  //   print("Stored Email: $storedEmail");
+  //
+  //   if (storedEmail != null) {
+  //     try {
+  //       final response = await http.get(
+  //         Uri.parse('${ApiUrls.baseurl}/api/registers/'),
+  //       );
+  //
+  //       if (response.statusCode == 200) {
+  //         final List<dynamic> data = jsonDecode(response.body);
+  //         print('All user data: $data');
+  //
+  //         final userData = data.firstWhere(
+  //               (user) => user['email'] == storedEmail,
+  //           orElse: () => null,
+  //         );
+  //
+  //         if (userData != null) {
+  //           print('Matched user data: $userData');
+  //           setState(() {
+  //             _userId = userData['id'].toString();
+  //
+  //             // Print statements to debug the data being set
+  //             print('Setting college name: ${userData['college_name']}');
+  //             _collegeNameController.text = userData['college_name'] ?? '';
+  //
+  //             print('Setting college state: ${userData['college_state']}');
+  //             _collegeStateController.text = userData['college_state'] ?? '';
+  //
+  //             print('Setting branch name: ${userData['branch_name']}');
+  //             _branchController.text = userData['branch_name'] ?? '';
+  //
+  //             print('Setting degree name: ${userData['degree_name']}');
+  //             _degreeController.text = userData['degree_name'] ?? '';
+  //
+  //             print('Setting passing year: ${userData['passing_year']}');
+  //             _passingYearController.text = (userData['passing_year'] ?? '').toString();
+  //           });
+  //         } else {
+  //           print('No user found with the stored email');
+  //         }
+  //       } else {
+  //         print('Failed to load user data: ${response.statusCode}');
+  //       }
+  //     } catch (e) {
+  //       print('Error: $e');
+  //     }
+  //   } else {
+  //     print('No email stored');
+  //   }
+  // }
+  Future<void> _fetchUserData(String profileId) async {
+    try {
+      // Fetch user data from the API using the provided profileId
+      final response = await http.get(
+        Uri.parse('http://13.127.246.196:8000/api/registers/$profileId'),
+      );
 
-    if (storedEmail != null) {
-      try {
-        final response = await http.get(
-          Uri.parse('${ApiUrls.baseurl}/api/registers/'),
-        );
+      print('Response status: ${response.statusCode}');
 
-        if (response.statusCode == 200) {
-          final List<dynamic> data = jsonDecode(response.body);
-          print('All user data: $data');
+      if (response.statusCode == 200) {
+        // Decode the response body for a specific profileId
+        final Map<String, dynamic> userData = jsonDecode(response.body);
+        print('Fetched user data: $userData');
 
-          final userData = data.firstWhere(
-                (user) => user['email'] == storedEmail,
-            orElse: () => null,
-          );
+        // Set the fetched data to the respective fields
+        setState(() {
+          _userId = userData['id'].toString();
 
-          if (userData != null) {
-            print('Matched user data: $userData');
-            setState(() {
-              _userId = userData['id'].toString();
+          // Debugging print statements for each field
+          print('Setting college name: ${userData['college_name']}');
+          _collegeNameController.text = userData['college_name'] ?? '';
 
-              // Print statements to debug the data being set
-              print('Setting college name: ${userData['college_name']}');
-              _collegeNameController.text = userData['college_name'] ?? '';
+          print('Setting college state: ${userData['college_state']}');
+          _collegeStateController.text = userData['college_state'] ?? '';
 
-              print('Setting college state: ${userData['college_state']}');
-              _collegeStateController.text = userData['college_state'] ?? '';
+          print('Setting branch name: ${userData['branch_name']}');
+          _branchController.text = userData['branch_name'] ?? '';
 
-              print('Setting branch name: ${userData['branch_name']}');
-              _branchController.text = userData['branch_name'] ?? '';
+          print('Setting degree name: ${userData['degree_name']}');
+          _degreeController.text = userData['degree_name'] ?? '';
 
-              print('Setting degree name: ${userData['degree_name']}');
-              _degreeController.text = userData['degree_name'] ?? '';
-
-              print('Setting passing year: ${userData['passing_year']}');
-              _passingYearController.text = (userData['passing_year'] ?? '').toString();
-            });
-          } else {
-            print('No user found with the stored email');
-          }
-        } else {
-          print('Failed to load user data: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error: $e');
+          print('Setting passing year: ${userData['passing_year']}');
+          _passingYearController.text = (userData['passing_year'] ?? '').toString();
+        });
+      } else {
+        print('Failed to load user data: ${response.statusCode}');
       }
-    } else {
-      print('No email stored');
+    } catch (e) {
+      print('Error fetching user data: $e');
     }
   }
+
 
 
   Future<void> _updateUserData() async {
@@ -379,6 +435,10 @@ void initState() {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your college name';
                           }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
+                          }
                           return null;
                         },
                       ),
@@ -438,6 +498,7 @@ void initState() {
                         dropdownItems: [
                           'B.Com',
                           'B.Sc',
+                          'BE',
                           'B.Tech',
                           'BBA',
                           'BCA',
@@ -447,7 +508,8 @@ void initState() {
                           'M.Tech',
                           'MBA',
                           'MCA',
-                          'Other',],
+                          'Other',
+                        ],
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your degree';

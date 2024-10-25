@@ -38,34 +38,77 @@ class _AddExperienceState extends State<AddExperience> {
     _loadExperienceDetails();
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? pickedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime.now(),
+  //   );
+  //
+  //   if (pickedDate != null && pickedDate != _selectedDate) {
+  //     setState(() {
+  //       _selectedDate = pickedDate;
+  //       joiningDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+  //     });
+  //   }
+  // }
+  // Future<void> _selectEndingDate(BuildContext context) async {
+  //   final DateTime? pickedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime.now(),
+  //   );
+  //
+  //   if (pickedDate != null && pickedDate != _selectedDate) {
+  //     setState(() {
+  //       _selectedEndingDate = pickedDate;
+  //       EndingDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+  //     });
+  //   }
+  // }
+  void _selectDate(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
-
-    if (pickedDate != null && pickedDate != _selectedDate) {
+    if (selectedDate != null) {
       setState(() {
-        _selectedDate = pickedDate;
-        joiningDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+        joiningDateController.text = selectedDate.toString().split(' ')[0]; // Format YYYY-MM-DD
       });
     }
   }
-  Future<void> _selectEndingDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+
+  void _selectEndingDate(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
 
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedEndingDate = pickedDate;
-        EndingDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-      });
+    if (selectedDate != null) {
+      // Parse the joining date from the controller
+      DateTime? joiningDate;
+      if (joiningDateController.text.isNotEmpty) {
+        joiningDate = DateTime.tryParse(joiningDateController.text);
+      }
+
+      // Validate if the ending date is greater than the joining date
+      if (joiningDate != null && selectedDate.isBefore(joiningDate)) {
+        // Show error if ending date is before joining date
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ending Date should be after Joining Date')),
+        );
+      } else {
+        // If valid, set the ending date in the controller
+        setState(() {
+          EndingDateController.text = selectedDate.toString().split(' ')[0]; // Format YYYY-MM-DD
+        });
+      }
     }
   }
 
@@ -442,8 +485,12 @@ class _AddExperienceState extends State<AddExperience> {
                           controller: organizationController,
                           hintText: '',
                           validator: (value) {
+                            final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for letters and spaces
+
                             if (value == null || value.isEmpty) {
                               return 'Organization Name is required';
+                            } else if (!characterRegex.hasMatch(value)) {
+                              return 'Only letters are allowed';
                             }
                             return null;
                           },
@@ -478,8 +525,12 @@ class _AddExperienceState extends State<AddExperience> {
                           controller: jobTitleController,
                           hintText: '',
                           validator: (value) {
+                            final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for letters and spaces
+
                             if (value == null || value.isEmpty) {
                               return 'Job Title is required';
+                            } else if (!characterRegex.hasMatch(value)) {
+                              return 'Only letters are allowed';
                             }
                             return null;
                           },
@@ -518,8 +569,12 @@ class _AddExperienceState extends State<AddExperience> {
                     controller: skillSetController,
                     hintText: '',
                     validator: (value) {
+                      final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for letters and spaces
+
                       if (value == null || value.isEmpty) {
-                        return 'Skill Set is required';
+                        return 'Skill set is required';
+                      } else if (!characterRegex.hasMatch(value)) {
+                        return 'Only letters are allowed';
                       }
                       return null;
                     },
