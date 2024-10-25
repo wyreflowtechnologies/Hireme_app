@@ -1,6 +1,7 @@
-import 'dart:convert';
+
 
 import 'package:flutter/material.dart';
+
 import 'package:hiremi_version_two/Controller/VerifyController.dart';
 
 import 'package:hiremi_version_two/Models/VerifyModel.dart';
@@ -85,8 +86,7 @@ late VerifyController _verifyController;
   final TextEditingController _degreeController = TextEditingController();
   final TextEditingController _passingYearController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   void _handleGenderChange(Gender? value) {
     setState(() {
@@ -116,11 +116,13 @@ late VerifyController _verifyController;
   bool _isAllFieldsValid() {
     return _formKey.currentState?.validate() ?? false;
   }
+String profileId = '';
 @override
 void initState() {
   super.initState();
+  _retrieveId();
   _verifyController = VerifyController();
-  _fetchUserProfile();
+
 
   _fetchFullName();
 
@@ -144,18 +146,35 @@ Future<void> _fetchStoredNumber() async {
 
 
 
-Future<void> _fetchUserProfile() async {
-  String? storedEmail = await _verifyController.getStoredEmail();
-  if (storedEmail != null) {
-    Verifymodel? userProfile = await _verifyController.fetchUserProfile(storedEmail);
+
+  Future<void> _retrieveId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int? savedId = prefs.getInt('userId');
+    if (savedId != null) {
+      print("Retrieved id is $savedId");
+      profileId = savedId.toString();
+      print(profileId);
+      _fetchUserProfile();
+    } else {
+      print("No id found in SharedPreferences");
+    }
+
+  }
+  Future<void> _fetchUserProfile() async {
+    String? storedEmail = await _verifyController.getStoredEmail();
+
+    // Fetch the user profile without checking if storedEmail is null
+    // Verifymodel? userProfile = await _verifyController.fetchUserProfile(storedEmail!);
+    Verifymodel? userProfile = await _verifyController.fetchUserProfile(profileId);
+
     if (userProfile != null) {
       setState(() {
         _userId = userProfile.id;
-        _fullNameController.text = userProfile.fullName ?? '';
-        _fatherNameController.text = userProfile.fatherName ?? '';
-        _emailController.text = userProfile.email ?? '';
-        _dobController.text = userProfile.dateOfBirth ?? '';
-        _birthPlaceController.text = userProfile.birthPlace ?? '';
+        _fullNameController.text = userProfile.fullName;
+        _fatherNameController.text = userProfile.fatherName;
+        _emailController.text = userProfile.email;
+        _dobController.text = userProfile.dateOfBirth;
+        _birthPlaceController.text = userProfile.birthPlace;
         _selectedGender = userProfile.gender != null
             ? Gender.values.firstWhere(
               (e) => e.toString() == 'Gender.' + userProfile.gender!,
@@ -167,7 +186,9 @@ Future<void> _fetchUserProfile() async {
       print(_fullNameController);
     }
   }
-}
+
+
+
 Future<void> _fetchFullName() async {
   final prefs = await SharedPreferences.getInstance();
   String? fullName = prefs.getString('full_name') ?? 'No name saved';
@@ -176,21 +197,27 @@ Future<void> _fetchFullName() async {
   });
 }
 Future<void> _updateUserProfile() async {
+
     if (!_isAllFieldsValid()) return;
 
     Verifymodel userProfile = Verifymodel(
       id: _userId.toString(),
       fullName: _fullNameController.text,
       fatherName: _fatherNameController.text,
-      email: _emailController.text,
+      email: _emailController.text.toLowerCase(),
       dateOfBirth: _dobController.text,
       birthPlace: _birthPlaceController.text,
       gender: _selectedGender.toString().split('.').last, // Add gender property if necessary
     );
+    print("UserProfile is ${userProfile.id}");
+    print("User ID: $_userId"); // To check if _userId has a value
 
     bool isSuccess = await _verifyController.updateUserProfile(userProfile);
+
     if (isSuccess) {
       // Navigate to next screen on success
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', userProfile.email); // Save updated email
       _initializeNumber();
       Navigator.push(
         context,
@@ -199,21 +226,16 @@ Future<void> _updateUserProfile() async {
     }
 
     else {
-      // Handle error case if update fails
       print("Updation Fails");
     }
   }
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+
+
     double imageSize = MediaQuery.of(context).size.width * 0.6;
     double imageHeight = MediaQuery.of(context).size.height * 0.157;
    return WillPopScope(
@@ -221,8 +243,7 @@ Future<void> _updateUserProfile() async {
        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const NewNavbar(isV: false,)));
          return false;
      },
-
-   child:Scaffold(
+     child:Scaffold(
       appBar: AppBar(
         title: const Text(
           'Review & Verify Your Profile',
@@ -322,6 +343,15 @@ Future<void> _updateUserProfile() async {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your full name';
                           }
+                          if(value.length<4){
+                            return "Length should be atleast 4";
+                          }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+
+                          // Check if the value contains special characters
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
+                          }
                           return null;
                         },
                       ),
@@ -333,6 +363,15 @@ Future<void> _updateUserProfile() async {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your father\'s full name';
+                          }
+                          if(value.length<4){
+                            return "Length should be atleast 4";
+                          }
+                          final invalidSymbolPattern = r'[^a-zA-Z\s]';
+
+                          // Check if the value contains special characters
+                          if (RegExp(invalidSymbolPattern).hasMatch(value)) {
+                            return 'Symbols and numbers are not allowed.';
                           }
                           return null;
                         },
@@ -350,6 +389,9 @@ Future<void> _updateUserProfile() async {
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Please enter a valid email address';
                           }
+                          // if (!value.toLowerCase().endsWith('@gmail.com')) {
+                          //   return 'Only Gmail addresses are allowed';
+                          // }
                           return null;
                         },
                       ),
@@ -362,17 +404,39 @@ Future<void> _updateUserProfile() async {
                         controller: _dobController,
 
                         onTap: () async {
-                          final DateTime? pickedDate = await showDatePicker(
+                          final screenSize = MediaQuery.of(context).size;
+                          // final DateTime? pickedDate = await showDatePicker(
+                          //   context: context,
+                          //   initialDate: DateTime.now(),
+                          //   firstDate: DateTime(1900),
+                          //   lastDate: DateTime.now(),
+                          // );
+                          // if (pickedDate != null) {
+                          //   setState(() {
+                          //     _selectedDate = pickedDate;
+                          //     _dobController.text =
+                          //         DateFormat('yyyy-MM-dd').format(pickedDate);
+                          //   });
+                          // }
+                          final DateTime? pickedDate=await showDatePicker(
                             context: context,
-                            initialDate: DateTime.now(),
+                            initialDate: DateTime(2017, 12, 31), // Set a valid initial date within the range
                             firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
+                            lastDate: DateTime(2017, 12, 31), // Set lastDate to December 31, 2017
+                            builder: (BuildContext context, Widget? child) {
+                              return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                  // Adjust text scale for larger/smaller screens
+                                  textScaleFactor: screenSize.width * 0.00225,
+                                ),
+                                child: child!,
+                              );
+                            },
                           );
                           if (pickedDate != null) {
                             setState(() {
                               _selectedDate = pickedDate;
-                              _dobController.text =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              _dobController.text =DateFormat('yyyy-MM-dd').format(pickedDate);
                             });
                           }
                         },
@@ -426,11 +490,11 @@ Future<void> _updateUserProfile() async {
                   ),
                 ),
               ),
-
           ],
         ),
       ),
     ),);
+   
   }
 
   Widget buildSectionHeader(String title) {
@@ -484,6 +548,7 @@ Widget buildLabeledTextField(
           ),
         ),
       ),
+
       SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
       Padding(
         padding: EdgeInsets.symmetric(

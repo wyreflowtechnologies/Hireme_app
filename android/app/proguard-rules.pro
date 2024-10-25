@@ -9,3 +9,9 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+#-keep class com.paytm.** { *; }
+-keep class com.paytm.routersdk.RouterService
+-keep class com.paytm.routersdk.RouterOrder
+-keep class com.paytm.routersdk.RouterTransactionCallback
+-keep class com.paytm.routersdk.RouterTransactionManager
+-keep class com.paytm.routersdk.model.** { *; }

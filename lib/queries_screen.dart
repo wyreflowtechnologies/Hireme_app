@@ -138,7 +138,7 @@ class _QueriesScreenState extends State<QueriesScreen> {
       });
     } else if (value != storedFullName) {
       setState(() {
-        _validationMessage = 'Please Entered you registered Email';
+        _validationMessage = 'Please Entered you registered name';
       });
     } else {
       setState(() {
@@ -237,10 +237,11 @@ class _QueriesScreenState extends State<QueriesScreen> {
                     ),
                     if (_validationMessage != null)
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 1.0),
                         child: Text(
                           _validationMessage!,
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: Colors.redAccent),
+
                         ),
                       ),
                     SizedBox(
@@ -302,6 +303,12 @@ class _QueriesScreenState extends State<QueriesScreen> {
                           'Query Type',
                           'Query Type',
                           controller: _queryTypeController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a query type';
+                            }
+                            return null;
+                          },
                           dropdownItems: queryType,
                           onChanged: (value) {
                             setState(() {

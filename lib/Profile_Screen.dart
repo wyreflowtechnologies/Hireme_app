@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/PersonalLinks.dart';
 
-import 'package:hiremi_version_two/Notofication_screen.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
 import 'package:hiremi_version_two/widgets_mustufa/BasicDetails.dart';
@@ -16,7 +15,7 @@ import 'package:hiremi_version_two/widgets_mustufa/Projects.dart';
 import 'package:hiremi_version_two/widgets_mustufa/ResumeSection.dart';
 
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({
+  const ProfileScreen({
     Key? key,
   }) : super(key: key);
 
@@ -49,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(
                   height: Sizes.responsiveMd(context),
                 ),
-                ResumeSection(),
+                const ResumeSection(),
                 SizedBox(
                   height: Sizes.responsiveMd(context),
                 ),
@@ -61,11 +60,11 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(
                   height: Sizes.responsiveMd(context),
                 ),
-                KeySkills(),
+                const KeySkills(),
                 SizedBox(
                   height: Sizes.responsiveMd(context),
                 ),
-                Education(),
+                const Education(),
                 SizedBox(
                   height: Sizes.responsiveMd(context),
                 ),

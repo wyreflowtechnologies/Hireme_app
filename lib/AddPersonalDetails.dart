@@ -93,7 +93,7 @@ class _AddPersonalDetailsState extends State<AddPersonalDetails> {
       };
       print(details);
 
-      final success = await _apiService.addPersonalDetails(details);
+      final success = await _apiService.addOrUpdatePersonalDetails(details);
 
       if (success) {
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -407,8 +407,12 @@ class _AddPersonalDetailsState extends State<AddPersonalDetails> {
                       title: 'Home Town',
                       hintText: 'Enter home town',
                       validator: (value) {
+                        final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for letters and spaces
+
                         if (value == null || value.isEmpty) {
                           return 'Please enter your home town';
+                        } else if (!characterRegex.hasMatch(value)) {
+                          return 'Only letters are allowed';
                         }
                         return null;
                       },
@@ -441,8 +445,25 @@ class _AddPersonalDetailsState extends State<AddPersonalDetails> {
                       title: 'Local Address',
                       hintText: 'Enter local address',
                       validator: (value) {
+                        // Regular expression for letters, numbers, and spaces
+                        final emojiRegex = RegExp(
+                            r'[\u{1F600}-\u{1F64F}]|' // Emoticons
+                            r'[\u{1F300}-\u{1F5FF}]|' // Misc Symbols and Pictographs
+                            r'[\u{1F680}-\u{1F6FF}]|' // Transport and Map
+                            r'[\u{1F700}-\u{1F77F}]|' // Alchemical Symbols
+                            r'[\u{1F780}-\u{1F7FF}]|' // Geometric Shapes Extended
+                            r'[\u{1F800}-\u{1F8FF}]|' // Supplemental Arrows-C
+                            r'[\u{1F900}-\u{1F9FF}]|' // Supplemental Symbols and Pictographs
+                            r'[\u{1FA00}-\u{1FA6F}]|' // Chess Symbols
+                            r'[\u{1FA70}-\u{1FAFF}]|' // Symbols and Pictographs Extended-A
+                            r'[\u{2600}-\u{26FF}]',    // Misc symbols like sun, moon
+                            unicode: true
+                        );
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your local address';
+                          return 'Please enter your Local Address.';
+                        }
+                        else if (emojiRegex.hasMatch(value)) {
+                          return 'Emojis are not allowed';
                         }
                         return null;
                       },
@@ -455,8 +476,24 @@ class _AddPersonalDetailsState extends State<AddPersonalDetails> {
                       title: 'Permanent Address',
                       hintText: 'Enter permanent address',
                       validator: (value) {
+                        final emojiRegex = RegExp(
+                            r'[\u{1F600}-\u{1F64F}]|' // Emoticons
+                            r'[\u{1F300}-\u{1F5FF}]|' // Misc Symbols and Pictographs
+                            r'[\u{1F680}-\u{1F6FF}]|' // Transport and Map
+                            r'[\u{1F700}-\u{1F77F}]|' // Alchemical Symbols
+                            r'[\u{1F780}-\u{1F7FF}]|' // Geometric Shapes Extended
+                            r'[\u{1F800}-\u{1F8FF}]|' // Supplemental Arrows-C
+                            r'[\u{1F900}-\u{1F9FF}]|' // Supplemental Symbols and Pictographs
+                            r'[\u{1FA00}-\u{1FA6F}]|' // Chess Symbols
+                            r'[\u{1FA70}-\u{1FAFF}]|' // Symbols and Pictographs Extended-A
+                            r'[\u{2600}-\u{26FF}]',    // Misc symbols like sun, moon
+                            unicode: true
+                        );
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your permanent address';
+                          return 'Please enter your Local Address.';
+                        }
+                        else if (emojiRegex.hasMatch(value)) {
+                          return 'Emojis are not allowed';
                         }
                         return null;
                       },
@@ -489,8 +526,12 @@ class _AddPersonalDetailsState extends State<AddPersonalDetails> {
                       title: 'Category',
                       hintText: 'Enter category',
                       validator: (value) {
+                        final characterRegex = RegExp(r'^[a-zA-Z\s]+$');  // Regular expression for only letters and spaces
+
                         if (value == null || value.isEmpty) {
                           return 'Please enter your category';
+                        } else if (!characterRegex.hasMatch(value)) {
+                          return 'Only letters are allowed';
                         }
                         return null;
                       },

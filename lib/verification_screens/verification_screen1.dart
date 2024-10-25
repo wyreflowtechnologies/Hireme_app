@@ -20,52 +20,52 @@ class VerificationScreen1 extends StatefulWidget {
 
 class _VerificationScreen1State extends State<VerificationScreen1> {
 final _formKey = GlobalKey<FormState>();
-  Gender? _selectedGender = Gender.Male;
-  String? _selectedState;
-  DateTime? _selectedDate;
 String _userId="";
 String _fullName="";
 
   // List<String> _states = ['State 1', 'State 2', 'State 3', 'State 4'];
 
-  final List<String> _states = [
-    'Andhra Pradesh',
-    'Arunachal Pradesh',
-    'Assam',
-    'Bihar',
-    'Chhattisgarh',
-    'Goa',
-    'Gujarat',
-    'Haryana',
-    'Himachal Pradesh',
-    'Jharkhand',
-    'Karnataka',
-    'Kerala',
-    'Madhya Pradesh',
-    'Maharashtra',
-    'Manipur',
-    'Meghalaya',
-    'Mizoram',
-    'Nagaland',
-    'Odisha',
-    'Punjab',
-    'Rajasthan',
-    'Sikkim',
-    'Tamil Nadu',
-    'Telangana',
-    'Tripura',
-    'Uttar Pradesh',
-    'Uttarakhand',
-    'West Bengal',
-    'Andaman and Nicobar Islands',
-    'Chandigarh',
-    'Dadra and Nagar Haveli and Daman and Diu',
-    'Delhi',
-    'Jammu and Kashmir',
-    'Ladakh',
-    'Lakshadweep',
-    'Puducherry',
-  ];
+    final List<String> _states = [
+      'Andhra Pradesh',
+      'Arunachal Pradesh',
+      'Assam',
+      'Bihar',
+      'Chhattisgarh',
+      'Goa',
+      'Gujarat',
+      'Haryana',
+      'Himachal Pradesh',
+      'Jharkhand',
+      'Karnataka',
+      'Kerala',
+      'Madhya Pradesh',
+      'Maharashtra',
+      'Manipur',
+      'Meghalaya',
+      'Mizoram',
+      'Nagaland',
+      'Odisha',
+      'Punjab',
+      'Rajasthan',
+      'Sikkim',
+      'Tamil Nadu',
+      'Telangana',
+      'Tripura',
+      'Uttar Pradesh',
+      'Uttarakhand',
+      'West Bengal',
+      'Andaman and Nicobar Islands',
+      'Chandigarh',
+      'Dadra and Nagar Haveli and Daman and Diu',
+      'Delhi',
+      'Jammu and Kashmir',
+      'Ladakh',
+      'Lakshadweep',
+      'Puducherry',
+    ];
+
+
+
 
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _fatherNameController = TextEditingController();
@@ -80,13 +80,11 @@ String _fullName="";
   final TextEditingController _degreeController = TextEditingController();
   final TextEditingController _passingYearController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
 
   void _handleGenderChange(Gender? value) {
     setState(() {
-      _selectedGender = value;
     });
   }
 
@@ -108,43 +106,91 @@ String _fullName="";
     _confirmPasswordController.dispose();
     super.dispose();
   }
+  String profileId="";
 @override
 void initState() {
   super.initState();
-  _fetchUserData();
+  _retrieveId();
+
   if (_fullName.isEmpty) {
     _fetchFullName();
   }
 }
-Future<void> _fetchUserData() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? storedEmail = prefs.getString('email');
-  print("Stored Email: $storedEmail");
+Future<void> _retrieveId() async {
+  final prefs = await SharedPreferences.getInstance();
+  final int? savedId = prefs.getInt('userId');
+  if (savedId != null) {
+    print("Retrieved id is $savedId");
+    profileId = savedId.toString();
+    _fetchUserData(profileId);
+  } else {
+    print("No id found in SharedPreferences");
+  }
 
-  if (storedEmail != null) {
+}
+// Future<void> _fetchUserData() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String? storedEmail = prefs.getString('email');
+//   print("Stored Email: $storedEmail");
+//
+//   if (storedEmail != null) {
+//     try {
+//       final response = await http.get(
+//         Uri.parse('${ApiUrls.baseurl}/api/registers/'),
+//       );
+//
+//       if (response.statusCode == 200) {
+//         final List<dynamic> data = jsonDecode(response.body);
+//         print('All user data: $data');
+//
+//         final userData = data.firstWhere(
+//               (user) => user['email'] == storedEmail,
+//           orElse: () => null,
+//         );
+//
+//         if (userData != null) {
+//           print('Matched user data: $userData');
+//           setState(() {
+//              _userId = userData['id'].toString();
+//              _phoneController.text=userData['phone_number'];
+//              _whatsappController.text=userData['whatsapp_number'];
+//           });
+//         } else {
+//           print('No user found with the stored email');
+//         }
+//       } else {
+//         print('Failed to load user data: ${response.statusCode}');
+//       }
+//     } catch (e) {
+//       print('Error: $e');
+//     }
+//   }
+//   else {
+//     print('No email stored');
+//   }
+// }
+  Future<void> _fetchUserData(String profileId) async {
+  print("profile is $profileId");
     try {
+      // Fetch user data from the API using the provided profileId
       final response = await http.get(
-        Uri.parse('${ApiUrls.baseurl}/api/registers/'),
+        Uri.parse('${ApiUrls.baseurl}/api/registers/$profileId'),
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        print('All user data: $data');
-
-        final userData = data.firstWhere(
-              (user) => user['email'] == storedEmail,
-          orElse: () => null,
-        );
+        final Map<String, dynamic> userData = jsonDecode(response.body);
+        print('Fetched user data: $userData');
 
         if (userData != null) {
-          print('Matched user data: $userData');
           setState(() {
-             _userId = userData['id'].toString();
-             _phoneController.text=userData['phone_number'];
-             _whatsappController.text=userData['whatsapp_number'];
+            _userId = userData['id'].toString();
+            _phoneController.text = userData['phone_number'] ?? '';
+            _whatsappController.text = userData['whatsapp_number'] ?? '';
           });
         } else {
-          print('No user found with the stored email');
+
+          print('No user data found for profile ID: $profileId');
+
         }
       } else {
         print('Failed to load user data: ${response.statusCode}');
@@ -152,15 +198,12 @@ Future<void> _fetchUserData() async {
     } catch (e) {
       print('Error: $e');
     }
-  } else {
-    print('No email stored');
   }
-}
-Future<void> _updateStoredNumber() async {
+  Future<void> _updateStoredNumber() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('stored_number', '50'); // Set the new number here
 }
-Future<void> _fetchFullName() async {
+  Future<void> _fetchFullName() async {
   final prefs = await SharedPreferences.getInstance();
   String? fullName = prefs.getString('full_name') ?? 'No name saved';
   setState(() {
@@ -198,7 +241,10 @@ Future<void> _updateUserData() async {
         context,
         SlidePageRoute(page: VerificationScreen2()),
       );
-    } else {
+
+    }
+
+    else {
       print("$_userId");
       print('Failed to update user data: ${response.statusCode}');
       print(response.body);
@@ -233,63 +279,64 @@ Future<void> _updateUserData() async {
             Center(
               child: Column(
                 children: [
-                  CircularPercentIndicator(
-                    radius: screenHeight * 0.05,
-                    lineWidth: 6,
-                    percent: 0.25,
-                    center: const Text(
-                      '25%',
-                      style: TextStyle(
-                          color: Color(0xFF34AD78), fontWeight: FontWeight.bold),
+                    CircularPercentIndicator(
+                      radius: screenHeight * 0.05,
+                      lineWidth: 6,
+                      percent: 0.25,
+                      center: const Text(
+                        '25%',
+                        style: TextStyle(
+                            color: Color(0xFF34AD78 ), fontWeight: FontWeight.bold),
+                      ),
+                      progressColor: Color(0xFF34AD78),
+                      backgroundColor: Colors.grey.shade300,
                     ),
-                    progressColor: Color(0xFF34AD78),
-                    backgroundColor: Colors.grey.shade300,
-                  ),
-                  SizedBox(height: screenHeight * 0.0075),
-                   Text(
-                    _fullName,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: screenHeight * 0.0075),
-                  Container(
-                    // height: screenHeight * 0.03,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.1),
-                      border: Border.all(color: const Color(0xFFC1272D)),
+                    SizedBox(height: screenHeight * 0.0075),
+                     Text(
+                      _fullName,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.all(screenWidth * 0.01),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: const Color(0xFFC1272D),
-                            size: screenWidth * 0.02,
-                          ),
-                          Text(
-                            ' Not verified',
-                            style: TextStyle(
+
+                    SizedBox(height: screenHeight * 0.0075),
+                    Container(
+                      // height: screenHeight * 0.03,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.1),
+                        border: Border.all(color: const Color(0xFFC1272D)),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.01),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
                               color: const Color(0xFFC1272D),
-                              fontSize: screenWidth *
-                                  0.02, // Adjusted based on screen width
+                              size: screenWidth * 0.02,
                             ),
-                          ),
-                        ],
+                            Text(
+                              ' Not verified',
+                              style: TextStyle(
+                                color: const Color(0xFFC1272D),
+                                fontSize: screenWidth *
+                                    0.02, // Adjusted based on screen width
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
 
             SizedBox(height: MediaQuery.of(context).size.height * 0.0425),
+
             Container(
               height: 1,
               width: screenWidth * 0.9,
               color: Colors.grey,
             ),
-
 
             Form(
               key: _formKey,
@@ -320,7 +367,13 @@ Future<void> _updateUserData() async {
                             return 'Please enter your phone number';
                           }
                           if (value.length < 10) {
-                            return 'Please enter a valid phone number';
+                            return 'Please enter a 10 digit phone number';
+                          }
+                          if (value.length > 10) {
+                            return 'Please enter a 10 digit Phone number';
+                          }
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                            return 'Special characters are not allowed';
                           }
                           return null;
                         },
@@ -337,6 +390,13 @@ Future<void> _updateUserData() async {
                           }
                           if (value.length < 10) {
                             return 'Please enter a valid WhatsApp number';
+                          }
+                          if (value.length > 10) {
+                            return 'Please enter a valid WhatsApp number';
+                          }
+
+                          if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                            return 'Please enter a valid WhatsApp number without special characters';
                           }
                           return null;
                         },

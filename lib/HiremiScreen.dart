@@ -31,6 +31,7 @@ class HiremiScreenState extends State<HiremiScreen> {
     setState(() {
       _savedEmail = prefs.getString('email') ?? 'No email saved';
     });
+
     print("Saved email is $_savedEmail");
     _retrieveId();
   }

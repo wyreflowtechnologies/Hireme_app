@@ -42,6 +42,7 @@ class _LogInState extends State<LogIn> {
 
     print("Saved email is $_savedEmail");
     await _isEmailVerified();
+    return null;
   }
 
   Future<bool> _isEmailVerified() async {
@@ -140,6 +141,51 @@ class _LogInState extends State<LogIn> {
       print("No id found in SharedPreferences");
     }
   }
+  Future<void> _showVerificationDialog(BuildContext context) async {
+    final TextEditingController _codeController = TextEditingController();
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Verification Code'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Please enter the verification code to proceed.'),
+                TextField(
+                  controller: _codeController,
+                  decoration: InputDecoration(labelText: 'Verification Code'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                if (_codeController.text == '123456') {
+                  Navigator.push(
+                    context,
+                    SlidePageRoute(page: Registers()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Invalid code. Please try again.'),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> _login() async {
 
@@ -157,8 +203,8 @@ class _LogInState extends State<LogIn> {
       Uri.parse(apiUrl),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        "email": _emailController.text,
-        "password": _passwordController.text,
+        "email": _emailController.text.toLowerCase().trim(),
+        "password": _passwordController.text.trim(),
       }),
     );
     setState(() {
@@ -166,8 +212,9 @@ class _LogInState extends State<LogIn> {
     });
 
     if (response.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', _emailController.text); // Save email to SharedPreferences
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('email', _emailController.text.toLowerCase().trim()); // Save email to SharedPreferences
 
       print("Login successful");
       print(response.body);
@@ -275,9 +322,6 @@ class _LogInState extends State<LogIn> {
                           return null;
                         },
                       ),
-
-
-
                       buildLabeledTextField(
                         context,
                         "Password",
@@ -312,7 +356,7 @@ class _LogInState extends State<LogIn> {
                           offset: const Offset(0, -17), // Adjust the value to move the text upward
                           child: TextButton(
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.blue, // Change this to the color you want
+                              foregroundColor: Colors.blueAccent, // Change this to the color you want
                             ),
                             onPressed: () {
                               Navigator.push(
@@ -321,7 +365,7 @@ class _LogInState extends State<LogIn> {
                               );
                             },
                             child: Text(
-                              'Forget Password?',
+                              'Forgot Password?',
                               style: TextStyle(color: Colors.blueAccent), // Adjust text color as needed
                             ),
                           ),
@@ -417,19 +461,21 @@ class _LogInState extends State<LogIn> {
                       SizedBox(height: MediaQuery.of(context).size.height * 0.018),
                       Center(
                         child: CustomElevatedButton(
-                          color: Color(0xFFF5F4F4),
+                         // color: Color(0xFFF5F4F4),
+                           color: Color(0xFFC1272D),
                           width: MediaQuery.of(context).size.width * 0.775,
                           height: MediaQuery.of(context).size.height * 0.0625,
                           text: 'Register Now',
                           textStyle: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w400,
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              SlidePageRoute(page: Registers()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   SlidePageRoute(page: Registers()),
+                            // );
+                            _showVerificationDialog(context);
                           },
                         ),
                       ),
