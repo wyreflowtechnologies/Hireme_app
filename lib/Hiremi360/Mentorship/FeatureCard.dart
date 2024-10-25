@@ -1,14 +1,14 @@
-import 'dart:ui';
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FeatureCard extends StatelessWidget {
   final String title;
   final String description;
   final List<Color> gradientColors;
+  final Color outerContainerColor; // Parameter for outer container color
 
-  // Constructor to accept custom title, description, and gradient colors
+  // Constructor to accept custom title, description, gradient colors, and outer container color
   const FeatureCard({
     Key? key,
     required this.title,
@@ -17,14 +17,17 @@ class FeatureCard extends StatelessWidget {
       Color(0xFFF249DC), // Default gradient color
       Color(0xFF1B1D9C),
     ],
+    required this.outerContainerColor,
+   // this.outerContainerColor = const Color.fromARGB(255, 245, 235, 255), // Default outer container color
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
+
     return Container(
-      color: const Color.fromARGB(255, 245, 235, 255),
+      color: outerContainerColor, // Use the provided outer container color
       width: screenWidth,
       child: Column(
         children: [
@@ -57,29 +60,44 @@ class FeatureCard extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(screenWidth * 0.04),
               decoration: BoxDecoration(
-                color: Colors.white, // Content background
+                color: Colors.white, // Keep the inner container color as white
                 borderRadius: BorderRadius.circular(screenWidth * 0.03),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  // Heading
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  // Content container
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Heading
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
-                  // Content
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.023,
-                      color: Colors.grey[700],
+                      // Content
+                      Text(
+                        description,
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.023,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Align the image to the bottom left
+                  Positioned(
+                    // top: screenWidth*0.069,
+                     left: screenWidth*0.64,
+                    child: Image.asset(
+                      'images/Group 33817.png', // Replace with your image asset path
+                      width: screenWidth * 0.2, // Adjust the image size
                     ),
                   ),
                 ],
@@ -89,5 +107,6 @@ class FeatureCard extends StatelessWidget {
         ],
       ),
     );
+
   }
 }

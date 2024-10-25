@@ -35,7 +35,7 @@ class InfoCard extends StatelessWidget {
         // Main card
         Container(
           width: width,
-          height: height,
+          height: height*1.01,
           child: Card(
             color: Colors.white,
             elevation: 1,
@@ -83,79 +83,44 @@ class InfoCard extends StatelessWidget {
         ),
         //Circular gradient overlay
         Positioned(
-          bottom: screenHeight * 0.012,  // Adjusted based on screen height
+          bottom: screenHeight * 0.015,  // Adjusted based on screen height
           right: screenWidth * 0.03,
           child: Stack(
             children: [
               Container(
                 width: gradientWidth,
                 height: gradientHeight,
-                decoration: BoxDecoration(
-                  gradient: gradient, // Use the passed gradient here
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(104.66),
-                  ),
-                ),
+                // decoration: BoxDecoration(
+                //   gradient: gradient, // Use the passed gradient here
+                //   borderRadius: BorderRadius.only(
+                //     topLeft: Radius.circular(104.66),
+                //   ),
+                // ),
                 // child: Opacity(
                 //   opacity: 1,
                 //   child: Container(),
                 // ),
               ),
               Positioned(
-                top: gradientHeight * 0.4,  // Responsive top position
-                right: screenWidth * 0.02,  // Adjusted image position
-                child: Image.asset(
-                  imagePath,  // Use the dynamic image path here
-                  width: imageSize,  // Responsive image size
-                  height: imageSize,  // Responsive image size
+                top: gradientHeight * 0.198,  // Responsive top position
+                right: screenWidth * 0.0011,  // Adjusted image position
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    Colors.white.withOpacity(1.0),  // Adjust brightness here
+                    BlendMode.colorBurn,  // Apply the brightness effect
+                  ),
+                  child: Image.asset(
+                    imagePath,  // Use the dynamic image path here
+                    // width: imageSize,  // Responsive image size
+                    // height: imageSize,  // Responsive image size
+                  ),
                 ),
               ),
             ],
           ),
 
         ),
-        // Positioned(
-        //   top: screenHeight * 0.101, // Adjust based on screen height
-        //   left: screenWidth * 0.71, // Adjust based on screen width
-        //   child: Stack(
-        //     children: [
-        //       Container(
-        //         width: gradientWidth, // Adjust the size based on screen width
-        //         height: gradientHeight, // Adjust the size based on screen height
-        //         decoration: BoxDecoration(
-        //           gradient: LinearGradient(
-        //             colors: [
-        //               Color.fromRGBO(135, 229, 251, 0.16),
-        //               Color.fromRGBO(42, 9, 139, 0.16),
-        //             ],
-        //             begin: Alignment.topLeft,
-        //             end: Alignment.bottomRight,
-        //           ),
-        //           shape: BoxShape.circle, // Makes the base shape a circle
-        //         ),
-        //         // Clip the circle to get the cut-off effect
-        //         clipBehavior: Clip.hardEdge,
-        //         child: Align(
-        //           alignment: Alignment.bottomRight,
-        //           child: Container(
-        //             width: gradientWidth * 0.75, // Adjust to clip part of the circle
-        //             height: gradientHeight * 0.75, // Adjust to clip part of the circle
-        //             color: Colors.transparent, // Ensure transparency where clipped
-        //           ),
-        //         ),
-        //       ),
-        //       Positioned(
-        //         top: gradientHeight * 0.4, // Adjust position based on gradient height
-        //         right: screenWidth * 0.02, // Adjust based on screen width
-        //         child: Image.asset(
-        //           imagePath, // Use the dynamic image path here
-        //           width: imageSize, // Responsive image size
-        //           height: imageSize, // Responsive image size
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
+
 
 
 

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hiremi_version_two/PaymentFailedPage.dart';
+import 'package:hiremi_version_two/Sharedpreferences_data/shared_preferences_helper.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class VerificationScreen3 extends StatefulWidget {
 class _VerificationScreen3State extends State<VerificationScreen3>   {
   final _formKey = GlobalKey<FormState>();
   String _fullName="";
-  double amount=9;
+  double amount=10;
   String Email="";
   int? SavedId;
   bool _isLoading = false; // Loading state variable
@@ -48,6 +49,7 @@ bool get wantKeepAlive => true;
   void initState() {
     // TODO: implement initState
     super.initState();
+    fetchAndStoreDiscountedPrice();
     _retrieveId();
 
     if (_fullName.isEmpty) {
@@ -65,20 +67,32 @@ bool get wantKeepAlive => true;
   String callbackResponseText = "";
   String transactionResponseText="";
 
-  // Future<void> _retrieveId() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final int? savedId = prefs.getInt('userId');
-  //   if (savedId != null) {
-  //     setState(() {
-  //       SavedId = savedId;
-  //     });
-  //     print("Retrieved id is in Verification $savedId");
-  //
-  //   } else {
-  //     print("No id found in SharedPreferences");
-  //   }
-  //
-  // }
+  Future<void> fetchAndStoreDiscountedPrice() async {
+    const String apiUrl = '${ApiUrls.baseurl}/api/discount/';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+
+        if (data.isNotEmpty && data[0]['discounted_price'] != null) {
+          double discountedPrice = (data[0]['discounted_price'] as num).toDouble();
+
+          // Store discounted price in SharedPreferences using helper class
+          await SharedPreferencesHelper.setDiscountedPrice(discountedPrice);
+
+          print("Discounted price stored: $discountedPrice");
+        } else {
+          print("Discounted price not found in the response.");
+        }
+      } else {
+        print("Failed to fetch data. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching discounted price: $e");
+    }
+  }
 
   Future<void> _retrieveId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -164,7 +178,6 @@ bool get wantKeepAlive => true;
       print('Error: $e');
     }
   }
-
   Future<void> updateUserVerificationStatus(int userId) async {
     final String updateUrl = "${ApiUrls.baseurl}/api/registers/$userId/";
 
@@ -180,13 +193,18 @@ bool get wantKeepAlive => true;
       );
 
       if (response.statusCode == 200) {
+
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (ctx) => const VerifiedPage()));
+
         final data = jsonDecode(response.body);
         print('User verification updated successfully: $data');
 
         if (data['verified'] == true) {
           //_showVerificationNotification();
         }
-      } else {
+      }
+      else {
         print('Failed to update user verification');
         print('Status code: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -214,11 +232,12 @@ bool get wantKeepAlive => true;
 
         print("Success in _initiateTransaction");
         print("transaction Succesfully");
+        await _postVerificationDetails();
           print(transactionResponse);
-          setState(() {
-            transactionResponseText=transactionResponse.toString();
-          });
-       //   _postVerificationDetails();
+          // setState(() {
+          //   transactionResponseText=transactionResponse.toString();
+          // });
+
 
           checkOrderStatus(orderId);
 
@@ -227,13 +246,13 @@ bool get wantKeepAlive => true;
       }
       else {
         print("taxDetailsforfailedpage is  $taxDetailsforfailedpage");
-
-      //  _navigateToPaymentFailedPage();
+        print("_navigateToPaymentFailedPage");
+     _navigateToPaymentFailedPage();
 
         checkOrderStatus(orderId);
-        setState(() {
-          transactionResponseText=transactionResponse.toString();
-        });
+        // setState(() {
+        //   transactionResponseText=transactionResponse.toString();
+        // });
         print("$transactionResponseText in error");
         throw Exception('Transaction failed bhai: ${transactionResponse!['RESPMSG']}');
       }
@@ -245,11 +264,13 @@ bool get wantKeepAlive => true;
   }
 
   void _navigateToPaymentFailedPage() {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => PaymentFailedPage(
-          onTryAgain: _makeTransactionRequestforFailedPayment,
-          taxDetailsforfailedpage: taxDetailsforfailedpage,
+          // onTryAgain: _makeTransactionRequestforFailedPayment,
+          //  onTryAgain: _makeTransactionRequestforFailedPayment,
+          //
+          // taxDetailsforfailedpage: taxDetailsforfailedpage,
         ),
       ),
     );
@@ -257,20 +278,65 @@ bool get wantKeepAlive => true;
   final String orderStatusUrl = '${ApiUrls.baseurl}/order-status/';
   void goToNextPage() {
     _checkEmail();
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => const VerifiedPage()));
+    // Navigator.of(context).push(MaterialPageRoute(
+    //     builder: (ctx) => const VerifiedPage()));
+
   }
+  // Future<void> _postVerificationDetails() async {
+  //
+  // print("WE are in _postVerificationDetails");
+  //
+  //   try {
+  //     final url = '${ApiUrls.baseurl}/api/verification-details/';
+  //     final params = {
+  //       "payment_status":"Enrolled",
+  //       'college_id_number': _EnrollementNumberController.text,
+  //       'interested_domain': _IntrestedDomainController.text,
+  //       'register':SavedId
+  //     };
+  //
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       body: json.encode(params),
+  //       headers: {'Content-Type': 'application/json'},
+  //     );
+  //
+  //     if (response.statusCode == 201)
+  //     {
+  //
+  //     //    goToNextPage();  // Call this function only if the widget is still mounted
+  //       //_checkEmail();
+  //       if (mounted) {
+  //         print("Navigating to next page..."); // Debug before navigation
+  //         goToNextPage(); // Call this function only if the widget is still mounted
+  //       } else {
+  //         print("Widget is unmounted; skipping navigation.");
+  //       }
+  //
+  //
+  //       print('Verification details posted successfully');
+  //       print(response.body);
+  //
+  //     }
+  //     else {
+  //       print('Failed to post verification details. Status code: ${response.statusCode}');
+  //       print(response.body);
+  //     }
+  //   } catch (e) {
+  //
+  //     print('Error posting verification details: $e');
+  //   }
+  // }
   Future<void> _postVerificationDetails() async {
-
-
+    print("WE are in _postVerificationDetails");
 
     try {
       final url = '${ApiUrls.baseurl}/api/verification-details/';
       final params = {
-        "payment_status":"Enrolled",
+        "payment_status": "Enrolled",
         'college_id_number': _EnrollementNumberController.text,
         'interested_domain': _IntrestedDomainController.text,
-        'register':SavedId
+        'register': SavedId
       };
 
       final response = await http.post(
@@ -279,15 +345,20 @@ bool get wantKeepAlive => true;
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 201)
-      {
-        goToNextPage();
-
+      if (response.statusCode == 201) {
         print('Verification details posted successfully');
         print(response.body);
-
-      }
-      else {
+        goToNextPage();
+        // Adding a small delay to ensure no premature navigation
+        Future.delayed(Duration(milliseconds: 300), () {
+          if (mounted) {
+            print("Navigating to next page...");
+           // Call this function only if the widget is still mounted
+          } else {
+            print("Widget is unmounted,skipping navigation.");
+          }
+        });
+      } else {
         print('Failed to post verification details. Status code: ${response.statusCode}');
         print(response.body);
       }
@@ -295,6 +366,7 @@ bool get wantKeepAlive => true;
       print('Error posting verification details: $e');
     }
   }
+
   Future<void> checkOrderStatus(String orderId) async {
     print("We are in checkOrderStatus");
     try {
@@ -413,13 +485,13 @@ bool get wantKeepAlive => true;
               'TXNID': transactionResponse['TXNID']
             };
 
-            setState(() {
-              responseText = txnDetails.toString();
-            });
+            // setState(() {
+            //   responseText = txnDetails.toString();
+            // });
             print("txnDetails is $txnDetails");
             taxDetailsforfailedpage=txnDetails;
-            // Navigator.of(context).push(MaterialPageRoute(
-            //     builder: (ctx) => const VerifiedPage()));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (ctx) => const VerifiedPage()));
 
             print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
 
@@ -448,6 +520,13 @@ bool get wantKeepAlive => true;
       });
     }
   }
+  // void resetTransactionState() {
+  //   setState(() {
+  //     // _transactionID = null;  // Reset transaction ID so it generates a new one for retry
+  //     // _transactionStatus = null; // Reset the transaction status
+  //     // _isLoading = false;  // Reset any loading flags
+  //   });
+  // }
   Future<void> _makeTransactionRequestforFailedPayment(double amount) async {
     print("we are in _makeTransactionRequestforFailedPayment");
     // setState(() {
@@ -480,7 +559,7 @@ bool get wantKeepAlive => true;
         headers: {'Content-Type': 'application/json'},
       );
 
-      // Checking response status
+
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
         print('Response data: $responseData'); // Print response data for debugging
@@ -515,8 +594,7 @@ bool get wantKeepAlive => true;
               'TXNDATE': transactionResponse['TXNDATE'],
               'TXNID': transactionResponse['TXNID']
             };
-            // Navigator.of(context).push(MaterialPageRoute(
-            //     builder: (ctx) => const VerifiedPage()));
+
 
            //  taxDetailsforfailedpage=txnDetails;
             print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
@@ -592,9 +670,9 @@ bool get wantKeepAlive => true;
         print("callback in else ${callbackResponse.statusCode}");
         print(callbackResponse.body);
         print("response is $response");
-        setState(() {
-          callbackResponseText = "Failed to post transaction response. Status code: ${callbackResponse.statusCode} ${callbackResponse.body}";
-        });
+        // setState(() {
+        //   callbackResponseText = "Failed to post transaction response. Status code: ${callbackResponse.statusCode} ${callbackResponse.body}";
+        // });
         print('Failed to post transaction response. Status code: ${callbackResponse.statusCode} ${callbackResponse.body}');
       }
     }
@@ -621,8 +699,6 @@ bool get wantKeepAlive => true;
     'Supply Chain Management',
     'Website Development',
   ];
-
-
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -788,7 +864,10 @@ bool get wantKeepAlive => true;
                                 print('Running in debug or profile mode');
                               }
                               if (_isAllFieldsValid()) {
-                               _makeTransactionRequest(amount);
+                                await SharedPreferencesHelper.setEnrollmentNumber(_EnrollementNumberController.text);
+                                await SharedPreferencesHelper.setInterestedDomain(_IntrestedDomainController.text);
+                                double? Amount = await SharedPreferencesHelper.getDiscountedPrice();
+                               _makeTransactionRequest(Amount!);
 
                               }
                             },

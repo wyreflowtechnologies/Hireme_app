@@ -185,6 +185,8 @@ import 'package:hiremi_version_two/Apis/api.dart';
                                   }
                                   else{
                                     final Map<String, dynamic> responseBody = jsonDecode(response.body);
+                                    print("response body is ${response.body}");
+                                    print("Status code is ${response.statusCode}");
                                     final errorMessage = responseBody['message'] ?? 'Unknown error';
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

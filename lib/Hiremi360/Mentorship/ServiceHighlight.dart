@@ -14,7 +14,7 @@ class Servicehighlight extends StatelessWidget {
             color: const Color.fromARGB(255, 245, 235, 255),
             borderRadius: BorderRadius.circular(10),
           ),
-          width: MediaQuery.of(context).size.width * 0.83,
+          width: MediaQuery.of(context).size.width * 0.85,
           height: MediaQuery.of(context).size.width * 0.23,
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -182,7 +182,7 @@ class Servicehighlight extends StatelessWidget {
             color: const Color.fromARGB(255, 245, 235, 255),
             borderRadius: BorderRadius.circular(10),
           ),
-          width: MediaQuery.of(context).size.width * 0.83,
+          width: MediaQuery.of(context).size.width * 0.87,
           height: MediaQuery.of(context).size.width * 0.23,
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -203,7 +203,7 @@ class Servicehighlight extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       //fontSize: 16
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                      fontSize: MediaQuery.of(context).size.width * 0.038,
                     ),
                   ),
                   SizedBox(height: 5), // Add some space between the title and description
@@ -267,7 +267,7 @@ class Servicehighlight extends StatelessWidget {
             color: const Color.fromARGB(255, 245, 235, 255),
             borderRadius: BorderRadius.circular(10),
           ),
-          width: MediaQuery.of(context).size.width * 0.83,
+          width: MediaQuery.of(context).size.width * 0.86,
           height: MediaQuery.of(context).size.width * 0.23,
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -288,14 +288,14 @@ class Servicehighlight extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       //fontSize: 16
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
+                      fontSize: MediaQuery.of(context).size.width * 0.037,
                     ),
                   ),
                   SizedBox(height: 5), // Add some space between the title and description
                   Text(
                     "Receive tailored mentorship aligned with\nyour career goals and aspirations.",
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.026,
+                      fontSize: MediaQuery.of(context).size.width * 0.024,
                     ),
                   ),
                 ],

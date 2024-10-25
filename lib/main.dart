@@ -1,8 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hiremi_version_two/Hiremi360/BottomNavbar360/BottomNavbar360.dart';
-import 'package:hiremi_version_two/Hiremi360/HomePage360/HomePage360.dart';
 
 
 import 'package:hiremi_version_two/Provider/ExperienceJobProvider.dart';
@@ -24,8 +22,10 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+
         ChangeNotifierProvider(create: (_) => InternshipProvider()),
         ChangeNotifierProvider(create: (_) => JobsProvider()),
+       // ChangeNotifierProvider(create: (_) => TrainingProvider()),
         ChangeNotifierProvider(create: (_) => ExperiencedJobsProvider()),
         ChangeNotifierProvider(create: (_) => HomePageOppurtunity()),
       ],
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         fontFamily: GoogleFonts.poppins().fontFamily,
       ),
 
-      home: BottomNavbar360()
+      home: SplashScreen()
     );
   }
 }

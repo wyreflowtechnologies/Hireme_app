@@ -410,6 +410,9 @@ final List<String> _states = [
                           if (value == null || value.isEmpty) {
                             return 'Please enter your full name';
                           }
+                          if(value.length<4){
+                            return "Length should be atleast 4";
+                          }
 
                           if (RegExp(invalidSymbolPattern).hasMatch(value)) {
                             return 'Symbols and numbers are not allowed.';
@@ -428,6 +431,9 @@ final List<String> _states = [
                           final invalidSymbolPattern = r'[^a-zA-Z\s]';
                           if (value == null || value.isEmpty) {
                             return 'Please enter your father\'s full name';
+                          }
+                          if(value.length<4){
+                            return "Length should be atleast 4";
                           }
                           if (RegExp(invalidSymbolPattern).hasMatch(value)) {
                             return 'Symbols and numbers are not allowed.';
@@ -619,6 +625,9 @@ final List<String> _states = [
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your college name';
+                          }
+                          if(value.length<4){
+                            return "Length should be atleast 4";
                           }
                           final invalidSymbolPattern = r'[^a-zA-Z\s]';
                           if (RegExp(invalidSymbolPattern).hasMatch(value)) {
@@ -848,7 +857,7 @@ final List<String> _states = [
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         
-                  CustomElevatedButton(
+                      CustomElevatedButton(
                     width: MediaQuery.of(context).size.width * 0.775,
                     height: MediaQuery.of(context).size.height * 0.0625,
                     text: 'Register Now',

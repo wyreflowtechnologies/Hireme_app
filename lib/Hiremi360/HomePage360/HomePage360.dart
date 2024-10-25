@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:hiremi_version_two/Hiremi360/CorporateTraining/CorporateTraining.dart';
 import 'package:hiremi_version_two/Hiremi360/HomePage360/CustomCarouselSlider.dart';
 import 'package:hiremi_version_two/Hiremi360/HomePage360/InfoCard.dart';
 import 'package:hiremi_version_two/Hiremi360/HomePage360/responsive_widget.dart';
 import 'package:hiremi_version_two/Hiremi360/Mentorship/Mentorship.dart';
 import 'package:hiremi_version_two/Hiremi360/NavigationANimation/NavigationAnimation.dart';
+import 'package:hiremi_version_two/Hiremi360/TrainingAndInternships/TrainingAndInternships.dart';
 
 class Homepage360 extends StatefulWidget {
   const Homepage360({Key? key}) : super(key: key);
@@ -20,17 +22,17 @@ class _Homepage360State extends State<Homepage360> {
     {
       'title': 'Mentorship Program',
       'description': 'Personalized guidance from industry experts to help\nindividuals achieve their career goals.',
-      'image': 'images/support_agent.png',
+      'image': 'images/Group 33783.png',
     },
     {
       'title': 'Corporate Training',
       'description': "Customized training solution designed to enhance the skills\n and productivity of a company's workforce.",
-      'image': 'images/support_agent.png',
+      'image': 'images/Group 33783.png',
     },
     {
       'title': 'Training Program',
       'description': "Comprehensive training modules to boost\nskills and career development.",
-      'image': 'images/support_agent.png',
+     'image': 'images/Group 33783.png',
     },
   ];
   final List<Gradient> gradients = [
@@ -118,8 +120,17 @@ class _Homepage360State extends State<Homepage360> {
           },
           child: _buildResponsiveImage('images/Mentorship.png', screenWidth),
         ),
-        _buildResponsiveImage('images/Corporate Training.png', screenWidth),
-        _buildResponsiveImage('images/Training.png', screenWidth),
+        GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(createBottomToTopRoute(CorporateTraining()));
+
+            },
+            child: _buildResponsiveImage('images/Corporate Training.png', screenWidth)),
+        GestureDetector(
+            onTap: (){
+              Navigator.of(context).push(createBottomToTopRoute(TrainingAndInternships()));
+            },
+            child: _buildResponsiveImage('images/Training.png', screenWidth)),
       ],
     );
   }

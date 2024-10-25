@@ -363,6 +363,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/Custom_alert_box.dart';
 import 'package:hiremi_version_two/Custom_Widget/drawer_child.dart';
+import 'package:hiremi_version_two/Hiremi360/BottomNavbar360/BottomNavbar360.dart';
 import 'package:hiremi_version_two/HomePage.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
 import 'package:hiremi_version_two/Profile_Screen.dart';
@@ -581,6 +582,11 @@ class _NewNavbarState extends State<NewNavbar> {
             onPressed: () {
               if (!widget.isV) {
                 _showVerificationDialog();
+              }
+              else{
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (ctx) => const BottomNavbar360(),
+                ));
               }
             },
             elevation: 4,
