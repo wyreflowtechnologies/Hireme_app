@@ -343,6 +343,7 @@ bool get wantKeepAlive => true;
         Uri.parse(url),
         body: json.encode(params),
         headers: {'Content-Type': 'application/json'},
+
       );
 
       if (response.statusCode == 201) {
@@ -460,7 +461,7 @@ bool get wantKeepAlive => true;
           var orderId = responseData['orderId'];
           var amount = responseData['amount'];
           var mid = '216820000000000077910';
-          var callbackUrll = '${ApiUrls.baseurl}/callback/';
+          var callbackUrll='${ApiUrls.baseurl}/callback/';
           var isStaging = false; // Set to true for staging environment
 
           // Use router SDK to initiate transaction
@@ -504,7 +505,9 @@ bool get wantKeepAlive => true;
         } else {
          print('Error: Missing required data in response');
         }
-      } else {
+      }
+
+      else {
         // Request failed
         print(response.statusCode);
         print(response.body);
@@ -520,13 +523,7 @@ bool get wantKeepAlive => true;
       });
     }
   }
-  // void resetTransactionState() {
-  //   setState(() {
-  //     // _transactionID = null;  // Reset transaction ID so it generates a new one for retry
-  //     // _transactionStatus = null; // Reset the transaction status
-  //     // _isLoading = false;  // Reset any loading flags
-  //   });
-  // }
+
   Future<void> _makeTransactionRequestforFailedPayment(double amount) async {
     print("we are in _makeTransactionRequestforFailedPayment");
     // setState(() {
@@ -539,18 +536,18 @@ bool get wantKeepAlive => true;
 
 
 
-      // API endpoint
+
       var url = '${ApiUrls.baseurl}/pay/';
 
-      // Generate a unique order ID
+
       var orderId = DateTime.now().millisecondsSinceEpoch.toString();
 
       // Parameters
       var params = {
-        'name': _fullName,
-        'amount': amount.toString(),
-        'orderId': orderId,
-        'email': Email
+          'name': _fullName,
+          'amount': amount.toString(),
+          'orderId': orderId,
+          'email': Email
       };
 
       var response = await http.post(
@@ -579,7 +576,7 @@ bool get wantKeepAlive => true;
           // Check if transactionResponse is not null and contains 'TXNID'
           if (transactionResponse != null && transactionResponse.containsKey('TXNID')) {
 
-            var txnDetails = {
+            var txnDetails =  {
               'BANKTXNID': transactionResponse['BANKTXNID'],
               'CHECKSUMHASH': transactionResponse['CHECKSUMHASH'],
               'CURRENCY': transactionResponse['CURRENCY'],

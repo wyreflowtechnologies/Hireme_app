@@ -50,7 +50,8 @@ class PaymentService {
           var transactionResponse = await _initiateTransaction(txnToken, orderId, amount, mid, callbackUrll, isStaging);
 
           if (transactionResponse != null && transactionResponse.containsKey('TXNID')) {
-            var txnDetails = {
+            var txnDetails =
+            {
               'BANKTXNID': transactionResponse['BANKTXNID'],
               'CHECKSUMHASH': transactionResponse['CHECKSUMHASH'],
               'CURRENCY': transactionResponse['CURRENCY'],
@@ -77,6 +78,7 @@ class PaymentService {
           return false;
         }
       }
+
       else {
         print(response.body);
         print('Request failed with status: ${response.statusCode}');
@@ -91,6 +93,7 @@ class PaymentService {
   }
 
 
+
   // Function to initiate the transaction using SDK
   Future<Map?> _initiateTransaction(String txnToken, String orderId, String amount, String mid, String callbackUrl, bool isStaging) async {
     print("We are in _initiateTransaction");
@@ -101,13 +104,13 @@ class PaymentService {
         print("Transaction successful");
         _checkOrderStatus(orderId);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Transaction successful! Transaction ID: ${transactionResponse['TXNID']}"),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text("Transaction successful! Transaction ID: ${transactionResponse['TXNID']}"),
+        //     backgroundColor: Colors.green,
+        //     duration: Duration(seconds: 3),
+        //   ),
+        // );
         return transactionResponse;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

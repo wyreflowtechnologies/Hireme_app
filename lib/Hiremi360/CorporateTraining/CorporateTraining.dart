@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:hiremi_version_two/Hiremi360/CorporateTraining/Controller/CorporateTrainingController.dart';
+import 'package:hiremi_version_two/Hiremi360/CorporateTraining/Model/CorporateTrainingModel.dart';
 import 'package:hiremi_version_two/Hiremi360/PaytmPayment/PaytmPayment.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,6 +27,7 @@ class _CorporateTrainingState extends State<CorporateTraining> {
   String buttonText="";
   bool isEnrolled=false;
   bool isButtonDisabled = false;
+  final CorporateTrainingController corporateTraininingController = CorporateTrainingController();
   late PaymentService paymentService;
 
   Future<void> _printSavedEmail() async {
@@ -32,6 +35,21 @@ class _CorporateTrainingState extends State<CorporateTraining> {
     final email = prefs.getString('email') ?? 'No email saved';
     print(email);
     Email=email;
+  }
+  Future<void> _enrollInCorporatetraining(String SavedId) async {
+    var corporateTraininingData = CorporateTrainingModel(
+      program_status: "Applied",
+      candidateStatus: "Applied",
+      applied: true,
+      register: SavedId,
+    );
+
+    try {
+      await corporateTraininingController.EnrollInCorporateTraining(corporateTraininingData);
+      _checkEnrollmentStatus();
+    } catch (e) {
+      print("Enrollment failed: $e"); // Handle errors if the enrollment fails
+    }
   }
   Future<void> _checkEnrollmentStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -44,7 +62,7 @@ class _CorporateTrainingState extends State<CorporateTraining> {
       print("Retrieved id is in Verification $savedId");
 
       // Fetch the user details from the API
-      final response = await http.get(Uri.parse('${ApiUrls.baseurl}/api/corporatediscount/'));
+      final response = await http.get(Uri.parse('${ApiUrls.baseurl}/api/corporatetraining/'));
 
       if (response.statusCode == 200) {
         final List<dynamic> mentorshipData = jsonDecode(response.body);
@@ -382,20 +400,7 @@ class _CorporateTrainingState extends State<CorporateTraining> {
                   ),
                 ),
                 SizedBox(height:screenWidth*0.09 ,),
-                // Text(
-                //   "Essential Skills for Success",
-                //   style: TextStyle(
-                //     fontSize: MediaQuery.of(context).size.width*0.06,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-                // Text(
-                //   "The advantages of Hiremi 360's Corporate Training Program",
-                //   style: TextStyle(
-                //     fontSize: MediaQuery.of(context).size.width*0.03,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
+
                 Container(
                   color:const Color.fromARGB(255, 229, 246, 255),
                   width: MediaQuery.of(context).size.width,
@@ -598,7 +603,7 @@ class _CorporateTrainingState extends State<CorporateTraining> {
 
 
                     String? _fullName = await SharedPreferencesHelper.getFullName();
-                    double? Amount = await SharedPreferencesHelper.getMentorshipDiscountedPrice();
+                    double? Amount = await SharedPreferencesHelper.getCorporateDiscountedPrice();
                     print("Amount is $Amount");
                     if (_fullName != null) {
                       // Initiate the payment transaction and capture the result
@@ -606,16 +611,16 @@ class _CorporateTrainingState extends State<CorporateTraining> {
 
                       // Display the result of the transaction
                       if (isSuccess) {
-
+                        _enrollInCorporatetraining(SavedId);
                         // _enrollInCorporateTraining(SavedId);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Transaction successful! in elevated button'),
-                            backgroundColor: Colors.green,
-                            behavior: SnackBarBehavior.floating,
-                            duration: Duration(seconds: 4),
-                          ),
-                        );
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(
+                        //     content: Text('Transaction successful! in elevated button'),
+                        //     backgroundColor: Colors.green,
+                        //     behavior: SnackBarBehavior.floating,
+                        //     duration: Duration(seconds: 4),
+                        //   ),
+                        // );
 
                       }
                       else {
@@ -659,8 +664,11 @@ class _CorporateTrainingState extends State<CorporateTraining> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFFF249DC), // Start color
-                        Color(0xFF1B1D9C), // End color
+                        // Color(0xFFF249DC), // Start color
+                        // Color(0xFF1B1D9C), // End color
+                        Colors.white,
+                        Colors.blueAccent,
+
                       ],
                       stops: [0.1047, 0.9086],
                     ),

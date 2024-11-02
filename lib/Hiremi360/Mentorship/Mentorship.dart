@@ -69,7 +69,9 @@ class _MentorshipState extends State<Mentorship> {
           print("Discounted price stored: $discountedPrice");
 
           // Update the UI
-          setState(() {});
+          setState(() {
+
+          });
         } else {
           print("Discounted price not found in the response.");
         }
